@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Splash from './Splash & Login Screen/splash'; // Vérifiez bien le chemin
-
+import Splash2 from './Splash & Login Screen/splash2';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -12,6 +12,7 @@ export default function App() {
       <StatusBar style="auto" />
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen name="Splash" options={{ headerShown: false }} component={Splash} />
+        <Stack.Screen name="Splash2" options={{ headerShown: false }} component={Splash2} />
       </Stack.Navigator>
     </NavigationContainer>
   );
