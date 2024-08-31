@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, Animated } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRoute } from '@react-navigation/native';
+import { useRoute,useNavigation } from '@react-navigation/native';
 import Pic1 from "../assets/splashPic1.png";
 import Pic2 from "../assets/splashPic2.png";
 
 const Splash2 = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const { genre } = route.params;
   const text = "Let the community help choose your outfit";
@@ -82,12 +83,16 @@ const Splash2 = () => {
         </View>
 
           <TouchableOpacity 
-            style={genre === 'man' ? styles.buttonContainerMan : styles.buttonContainer}>
+            style={genre === 'man' ? styles.buttonContainerMan : styles.buttonContainer} 
+            onPress={() => navigation.navigate("LoginP1",{genre})}
+            >
             <Text style={styles.textstyle}>Login</Text>
           </TouchableOpacity>
         
           <TouchableOpacity 
-            style={genre === 'man' ? styles.buttonContainer2Man : styles.buttonContainer2}>
+            style={genre === 'man' ? styles.buttonContainer2Man : styles.buttonContainer2}
+            onPress={() => navigation.navigate("AcountDet",{genre})}
+            >
             <Text style={styles.textstyle}>Sign In</Text>
           </TouchableOpacity>
         
