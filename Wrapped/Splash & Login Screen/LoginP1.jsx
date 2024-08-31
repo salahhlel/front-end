@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, Animated } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRoute } from '@react-navigation/native';
+import { useRoute,useNavigation} from '@react-navigation/native';
 import EmailLogoW from "../assets/EmailLogo.png"
 import GoogleLogoW from "../assets/googleLogoW.png"
 import FbLogoW from "../assets/fbLogoW.png"
@@ -9,6 +9,8 @@ import FbLogoW from "../assets/fbLogoW.png"
 
 const LoginP1 = () => {
     const route = useRoute();
+    const navigation = useNavigation();
+
     const { genre } = route.params;
 
     const text='Join Our Community to access all features'
@@ -119,7 +121,10 @@ const LoginP1 = () => {
             </View>
         </View>
         <Animated.View style={{ opacity: animatedOpacity3 , marginBottom:"10%"}}>
-          <TouchableOpacity style={{flexDirection:"row"}}>
+          <TouchableOpacity 
+          style={{flexDirection:"row"}}
+          onPress={() => navigation.navigate("AcountDet",{genre})}
+          >
             <Text style={styles.textstyle3}>{displayedText2 }</Text>
             <Text style={styles.textstyle4}>{displayedText3}</Text>
           </TouchableOpacity>
