@@ -94,7 +94,9 @@ const LoginP1 = () => {
         </View>
         <View style={styles.view1}>
             <View style={styles.view2}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button}
+                  onPress={() => navigation.navigate("LoginWEmail",{genre})}
+                >
                     <Image
                         source={EmailLogoW}
                         style={styles.logo}
