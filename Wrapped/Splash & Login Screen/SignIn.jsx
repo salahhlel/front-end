@@ -6,7 +6,8 @@ import BackIcon from '../assets/flecheIcon.png';
 import GoogleLogoW from "../assets/googleLogoW.png"
 import FbLogoW from "../assets/fbLogoW.png"
 import LogoWarpeed from '../assets/logo2.png'
-const LoginWEmail = () => {
+
+const SignIn = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { genre } = route.params; // Make sure 'genre' is defined here
@@ -28,7 +29,8 @@ const LoginWEmail = () => {
                         source={BackIcon}
                         style={styles.logo}
                     />
-                    <Text style={styles.textstyle}>Log In</Text>
+                  
+                    <Text style={styles.textstyle}>Sign In</Text>
                 </TouchableOpacity>
                 <Image 
                 source={LogoWarpeed}
@@ -45,15 +47,19 @@ const LoginWEmail = () => {
                         placeholder="Password"
                         placeholderTextColor={genre==='man'? '#1870B3':'#AD669E'}
                     />
+                    <TextInput
+                        style={[styles.input,{borderColor: genre === 'man' ? '#1870B3' : '#AD669E',color:genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholder="Confirme Password"
+                        placeholderTextColor={genre==='man'? '#1870B3':'#AD669E'}
+                    />
                 </View>
-                    <TouchableOpacity style={{marginBottom:'15%'}}
-                    onPress={() => navigation.navigate("ForgetPassword", { genre })}
-                    >
-                    <Text style={styles.forgetpass}>Forget Password !</Text>
-                    </TouchableOpacity>
+                   
                     
-                <TouchableOpacity style={[styles.proceedButton,{backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E',}]}>
-                    <Text style={styles.proceedText}>Log In</Text>
+                <TouchableOpacity
+                 style={[styles.proceedButton,{backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E',}]}
+                 onPress={() => navigation.navigate("AcountDet", { genre })}
+                >
+                    <Text style={styles.proceedText}>Next</Text>
                 </TouchableOpacity>
                     <Text style={{color:'#FFFFFF',fontSize:18, fontWeight:700}}>Or</Text>
                 <View style={styles.view1}>
@@ -116,7 +122,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         marginTop:'-12%',
         width: '100%',
-        marginBottom: 20,
+        marginBottom: "10%",
     },
     input: {
         backgroundColor: '#FFFFFFEC',
@@ -178,4 +184,4 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
 });
-export default LoginWEmail;
+export default SignIn;

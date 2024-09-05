@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import CameraIcon from '../assets/cameraIcon.png';
+import LogoWarpeed from '../assets/logo2.png'
 
 const AcountDet = () => {
     const navigation = useNavigation();
@@ -20,7 +21,7 @@ const AcountDet = () => {
                 end={{ x: 0.5, y: 1 }}
                 style={styles.background}
             >
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                     style={styles.backButton}
                     onPress={() => navigation.navigate("Splash2", { genreA })}
                 >
@@ -29,8 +30,7 @@ const AcountDet = () => {
                         style={styles.logo}
                     />
                     <Text style={styles.textstyle}>Account Details</Text>
-                </TouchableOpacity>
-
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.cameraButton}>
                     <Image
                         source={CameraIcon}
@@ -91,6 +91,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 50,
     },
+    logo1:{
+        width:"45%",
+        height:"25%",
+    },
     backButton: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -99,8 +103,8 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: 20,
-        height: 20,
-        marginRight: 10,
+        height: 35,
+        marginRight: "8%",
     },
     textstyle: {
         fontSize: 24,
@@ -116,7 +120,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 30,
         borderWidth:2,
-        borderColor:'#FFFFFF'
+        borderColor:'#FFFFFF',
+        marginTop:"20%"
     },
     cameraIcon: {
         width: 40,
