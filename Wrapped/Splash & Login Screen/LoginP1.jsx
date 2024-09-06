@@ -125,7 +125,7 @@ const LoginP1 = () => {
         <Animated.View style={{ opacity: animatedOpacity3 , marginBottom:"10%"}}>
           <TouchableOpacity 
           style={{flexDirection:"row"}}
-          onPress={() => navigation.navigate("AcountDet",{genre})}
+          onPress={() => navigation.navigate("SignIn",{genre})}
           >
             <Text style={styles.textstyle3}>{displayedText2 }</Text>
             <Text style={styles.textstyle4}>{displayedText3}</Text>
