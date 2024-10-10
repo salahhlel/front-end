@@ -1,36 +1,104 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
+import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading } from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import CameraIcon from '../assets/cameraIcon.png';
-import LogoWarpeed from '../assets/logo2.png'
+import LogoWarpeed from '../assets/logo2.png';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
+import axios from 'axios'
+import Port from '../Port'
+
 
 const AcountDet = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { genre } = route.params; // Make sure 'genre' is defined here
+    const { genre, email, password } = route.params;
 
-    const [genreA, setGenreA] = useState(genre); // Set the initial state using 'genre'
+    const [genreA, setGenreA] = useState(genre);
+    const [birthDate, setBirthDate] = useState(new Date());
+    const [fullname, setFullName] = useState('');
+    const [emailA, setEmailA] = useState(email);
+    const [passwordA, setPasswordA] = useState(password);
+    const [phonenbr, setPhonenbr] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState('');
+
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showSpiner,setShowSpiner]=useState(false)
+////////////////////////////////////////////////////////////////
+
+const AddNewUser=async()=>{
+    setShowSpiner(true)
+    let infoUser={
+        email:email,
+        password:password, 
+        full_name:fullname,
+        phone_number:phonenbr,
+        sexe:genreA,
+        profile_picture_url:'',
+        grade:0,
+        region:selectedRegion
+    }
+    try{
+        const response = await axios.post(Port+'/users/'+infoUser)
+
+    }catch(e){}
+}
+
+////////////////////////////////////////////////////////////////
+    const regions = [
+        'Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa', 'Jendouba',
+        'Kairouan', 'Kasserine', 'Kébili', 'Le Kef', 'Mahdia', 'La Manouba',
+        'Médenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana',
+        'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan'
+    ];
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || birthDate;
+        setShowDatePicker(false);
+        setBirthDate(currentDate);
+    };
+///////////////////////////NATIVE BASE//////////////////////////////
+    const Example = () => {
+        return (
+            <Box style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E' }]}>
+                <Select
+                    selectedValue={selectedRegion}
+                    minWidth="345"
+                    accessibilityLabel="Choose Region"
+                    placeholder="Choose Region"
+                    _selectedItem={{
+                        bg: genreA === 'man' ? "#1870B3" : "#AD669E",
+                        endIcon: <CheckIcon size="5" />
+                    }}
+                    style={{ color: genreA === 'man' ? '#1870B3' : '#AD669E' }}
+                    onValueChange={itemValue => setSelectedRegion(itemValue)}
+                >
+                    {regions.map((region, index) => (
+                        <Select.Item label={region} value={region} key={index} />
+                    ))}
+                </Select>
+            </Box>
+        );
+    };
+    const ExampleSpiner = () => {
+        return <HStack space={2} justifyContent="center" mb={10}>
+            <Spinner color={genreA === 'man' ? "cyan.800" : "indigo.800"}  size="lg" />
+          </HStack>;
+      };
+///////////////////////////NATIVE BASE//////////////////////////////
 
     return (
+        <NativeBaseProvider>
         <View style={styles.container}>
             <LinearGradient
-                colors={genreA === 'man' ? ['#2C9AEE', '#ABC0FF'] : ['#AD669E','#FFB6C8']}
+                colors={genreA === 'man' ? ['#2C9AEE', '#ABC0FF'] : ['#AD669E', '#FFB6C8']}
                 start={{ x: 0.5, y: 0 }}
                 end={{ x: 0.5, y: 1 }}
                 style={styles.background}
             >
-                {/* <TouchableOpacity 
-                    style={styles.backButton}
-                    onPress={() => navigation.navigate("Splash2", { genreA })}
-                >
-                    <Image
-                        source={BackIcon}
-                        style={styles.logo}
-                    />
-                    <Text style={styles.textstyle}>Account Details</Text>
-                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.cameraButton}>
                     <Image
                         source={CameraIcon}
@@ -40,25 +108,38 @@ const AcountDet = () => {
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={[styles.input,{borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color:genreA === 'man' ? '#1870B3' : '#AD669E'}]}
-                        placeholder="Name"
-                        placeholderTextColor={genreA==='man'? '#1870B3':'#AD669E'}
+                        style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color: genreA === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholder="Full Name"
+                        placeholderTextColor={genreA === 'man' ? '#1870B3' : '#AD669E'}
+                        onChangeText={(text) => { setFullName(text) }}
                     />
                     <TextInput
-                        style={[styles.input,{borderColor: genreA === 'man' ? '#1870B3' : '#AD669E',color:genreA === 'man' ? '#1870B3' : '#AD669E' }]}
-                        placeholder="Username"
-                        placeholderTextColor={genreA==='man'? '#1870B3':'#AD669E'}
+                        style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color: genreA === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholder="Phone Number"
+                        placeholderTextColor={genreA === 'man' ? '#1870B3' : '#AD669E'}
+                        keyboardType="phone-pad"
+                        onChangeText={(text) => { setPhonenbr(text) }}
                     />
-                    <TextInput
-                        style={[styles.input,{borderColor: genreA === 'man' ? '#1870B3' : '#AD669E',color:genreA === 'man' ? '#1870B3' : '#AD669E' }]}
-                        placeholder="Country"
-                        placeholderTextColor={genreA==='man'? '#1870B3':'#AD669E'}
-                    />
-                    <TextInput
-                        style={[styles.input,{borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color:genreA === 'man' ? '#1870B3' : '#AD669E'}]}
-                        placeholder="Birth Year"
-                        placeholderTextColor={genreA==='man'? '#1870B3':'#AD669E'}
-                    />
+
+                    {/* Picker for selecting region */}
+                    <Example />
+
+                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                        <TextInput
+                            style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color: genreA === 'man' ? '#1870B3' : '#AD669E' }]}
+                            placeholderTextColor={'#AD669E'}
+                            value={birthDate.toLocaleDateString()}
+                        />
+                    </TouchableOpacity>
+
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={birthDate}
+                            mode="date"
+                            display="default"
+                            onChange={onChange}
+                        />
+                    )}
                 </View>
 
                 <View style={styles.genderContainer}>
@@ -69,14 +150,20 @@ const AcountDet = () => {
                         <Text style={styles.genderText}>Woman</Text>
                     </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity style={[styles.proceedButton,{backgroundColor: genreA === 'man' ? '#2C9AEE' : '#AD669E',}]}>
+                    {!showSpiner?
+                <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genreA === 'man' ? '#2C9AEE' : '#AD669E' }]}
+                onPress={()=>{}}
+                >
                     <Text style={styles.proceedText}>Proceed</Text>
                 </TouchableOpacity>
+                    :
+                    <ExampleSpiner/>
+                    }
 
                 <Text style={styles.termsText}>By proceeding, you are accepting all our <Text style={styles.linkText}>terms & conditions</Text>.</Text>
             </LinearGradient>
         </View>
+        </NativeBaseProvider>
     );
 }
 
@@ -91,26 +178,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 50,
     },
-    logo1:{
-        width:"45%",
-        height:"25%",
-    },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        marginBottom: 20,
-    },
-    logo: {
-        width: 20,
-        height: 35,
-        marginRight: "8%",
-    },
-    textstyle: {
-        fontSize: 24,
-        color: "#FFFFFF",
-        fontWeight: '600',
-    },
     cameraButton: {
         backgroundColor: '#FFFFFF6C',
         width: 100,
@@ -119,9 +186,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 30,
-        borderWidth:2,
-        borderColor:'#FFFFFF',
-        marginTop:"20%"
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+        marginTop: "20%"
     },
     cameraIcon: {
         width: 40,
@@ -139,6 +206,15 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         paddingHorizontal: 20,
         fontSize: 16,
+        borderWidth: 2,
+    },
+    pickerContainer: {
+        backgroundColor: '#FFFFFFEC',
+        borderRadius: 10,
+        height: 50,
+        justifyContent: 'center',
+        marginBottom: 25,
+        paddingHorizontal: 20,
         borderWidth: 2,
     },
     genderContainer: {

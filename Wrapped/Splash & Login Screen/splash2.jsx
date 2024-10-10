@@ -93,7 +93,7 @@ const Splash2 = () => {
             style={genre === 'man' ? styles.buttonContainer2Man : styles.buttonContainer2}
             onPress={() => navigation.navigate("SignIn",{genre})}
             >
-            <Text style={styles.textstyle}>Sign In</Text>
+            <Text style={styles.textstyle}>Sign Up</Text>
           </TouchableOpacity>
         
         <Animated.View style={{ opacity: animatedOpacity3 }}>

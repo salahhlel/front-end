@@ -9,6 +9,7 @@ import AcountDet from './Splash & Login Screen/AcountDet';
 import LoginWEmail from './Splash & Login Screen/LoginWEmail';
 import SignIn from './Splash & Login Screen/SignIn';
 import ForgetPassword from './Splash & Login Screen/ForgetPass';
+import NPassword from './Splash & Login Screen/Npaswword';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
         <Stack.Screen name="LoginWEmail" options={{ headerShown: false }} component={LoginWEmail}/>
         <Stack.Screen name="SignIn" options={{ headerShown: false }} component={SignIn}/>
         <Stack.Screen name="ForgetPassword" options={{ headerShown: false }} component={ForgetPassword}/>
+        <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

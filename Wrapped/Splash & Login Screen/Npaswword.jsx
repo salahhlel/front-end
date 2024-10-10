@@ -4,21 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import LogoWarpeed from '../assets/logo2.png'
-
-const ForgetPassword = () => {
+const NPassword = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { genre } = route.params;
 
-    // Create refs for each TextInput
-    const inputRefs = useRef([]);
-
-    // Function to handle input change and focus on the next TextInput
-    const handleInputChange = (text, index) => {
-        if (text.length === 1 && index < inputRefs.current.length - 1) {
-            inputRefs.current[index + 1].focus();  // Move to the next input
-        }
-    };
 
     return (
         <View style={styles.container}>
@@ -43,31 +33,34 @@ const ForgetPassword = () => {
                     source={LogoWarpeed}
                     style={styles.logo1}
                 />
-                <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>Please enter your recovery code</Text>
-
-                <View style={styles.inputContainer}>
-                    {[...Array(4)].map((_, index) => (
-                        <TextInput
-                            key={index}
-                            ref={(el) => (inputRefs.current[index] = el)}  // Assign ref to each input
-                            style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
-                            keyboardType="numeric"  // Display numeric keyboard
-                            maxLength={1}  // Restrict input to a single character
-                            onChangeText={(text) => handleInputChange(text, index)}  // Handle input change
-                        />
-                    ))}
+                <View style={{flexDirection:"column",alignItems:"center"}}>
+                <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>Entrer votre </Text>
+                <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>nouveau mot de passe </Text>
                 </View>
-
-                <TouchableOpacity 
-                onPress={()=>navigation.navigate("NPassword" ,{genre})}
-                style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholder="New Password"
+                        placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
+                        // value={email}
+                        // onChangeText={setEmail} // Update email state
+                    />
+                    <TextInput
+                        style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholder="Confirm New Password"
+                        placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
+                        secureTextEntry
+                        // value={password}
+                        // onChangeText={setPassword} // Update password state
+                    />
+                </View>
+                <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}>
                     <Text style={styles.proceedText}>Verif</Text>
                 </TouchableOpacity>
             </LinearGradient>
         </View>
-    );
-};
-
+        )
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -96,24 +89,7 @@ const styles = StyleSheet.create({
         height: "25%",
         marginTop: "10%",
     },
-    inputContainer: {
-        marginTop: '12%',
-        width: '100%',
-        marginBottom: "10%",
-        flexDirection: "row",
-        justifyContent: "center",
-    },
-    input: {
-        backgroundColor: '#FFFFFFEC',
-        borderRadius: 10,
-        height: 50,
-        paddingHorizontal: 20,
-        fontSize: 16,
-        borderWidth: 2,
-        width: "15%",
-        textAlign: 'center',
-        margin: "5%",
-    },
+
     proceedButton: {
         borderRadius: 25,
         width: '100%',
@@ -126,6 +102,20 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
     },
+    input: {
+        backgroundColor: '#FFFFFFEC',
+        borderRadius: 10,
+        height: 50,
+        marginBottom: 25,
+        paddingHorizontal: 20,
+        fontSize: 16,
+        borderWidth: 2,
+    },
+    inputContainer: {
+        marginTop: '-12%',
+        width: '100%',
+        marginBottom: 20,
+    },
 });
 
-export default ForgetPassword;
+export default NPassword;

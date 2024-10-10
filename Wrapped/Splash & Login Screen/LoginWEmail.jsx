@@ -83,26 +83,8 @@ const LoginWEmail = () => {
                     <Text style={styles.proceedText}>Log In</Text>
                 </TouchableOpacity>
                 
-                <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>Or</Text>
                 
-                <View style={styles.view1}>
-                    <View style={styles.view2}>
-                        <TouchableOpacity style={styles.button}>
-                            <Image
-                                source={GoogleLogoW}
-                                style={styles.logo2}
-                            />
-                            <Text style={styles.textstyle1}>Login with Google</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button}>
-                            <Image
-                                source={FbLogoW}
-                                style={styles.logo2}
-                            />
-                            <Text style={styles.textstyle1}>Login with Facebook</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                  
             </LinearGradient>
         </View>
     );

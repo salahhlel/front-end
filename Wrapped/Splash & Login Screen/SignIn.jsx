@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { IconButton, Icon, NativeBaseProvider  } from 'native-base';
+import { Ionicons } from '@expo/vector-icons'; // Import des icônes Ionicons
 import BackIcon from '../assets/flecheIcon.png';
 import GoogleLogoW from "../assets/googleLogoW.png";
 import FbLogoW from "../assets/fbLogoW.png";
@@ -19,26 +21,27 @@ const SignIn = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [showOauth ,setShowOauth]=useState(false)
+    // State for showing/hiding password
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     // Email validation
     const validateEmail = (email) => {
-        // Simple email validation regex
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
 
     // Password validation
-const validatePassword = (password) => {
-    // Regex updated to check for at least one uppercase letter, one digit, and allowing special characters, with length 1-12 characters
-    const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&+_]{1,8}$/;
-    return regex.test(password);
-};
-
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&+_]{1,8}$/;
+        return regex.test(password);
+    };
 
     // Handle form submission
     const handleSubmit = () => {
         let valid = true;
-
+        setShowOauth(true)
         // Validate email
         if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address.');
@@ -50,7 +53,6 @@ const validatePassword = (password) => {
         // Validate password
         if (!validatePassword(password)) {
             console.log(password);
-            
             setPasswordError('Password must contain at least one uppercase letter, one digit, and be 12 characters or less.');
             valid = false;
         } else {
@@ -67,14 +69,13 @@ const validatePassword = (password) => {
 
         // Proceed if all validations pass
         if (valid) {
-            navigation.navigate("AcountDet", { genre });
+            navigation.navigate("AcountDet", { genre,password,email });
         }
     };
 
-    // Check if there is any error
-    const hasErrors = emailError || passwordError || confirmPasswordError;
-
     return (
+        <NativeBaseProvider>
+
         <View style={styles.container}>
             <LinearGradient
                 colors={genre === 'man' ? ['#2C9AEE', '#ABC0FF'] : ['#AD669E', '#FFB6C8']}
@@ -90,40 +91,54 @@ const validatePassword = (password) => {
                         source={BackIcon}
                         style={styles.logo}
                     />
-                    <Text style={styles.textstyle}>Sign In</Text>
+                    <Text style={styles.textstyle}>Sign Up</Text>
                 </TouchableOpacity>
                 <Image 
                     source={LogoWarpeed}
                     style={styles.logo1}
                 />
                 <View style={styles.inputContainer}>
-                    <TextInput
-                        value={email}
-                        onChangeText={setEmail}
-                        style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
-                        placeholder="Email"
-                        placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
-                    />
-                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            value={email}
+                            onChangeText={setEmail}
+                            style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                            placeholder="Email"
+                            placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
+                        />
+                    </View>
+                        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-                    <TextInput
-                        value={password}
-                        onChangeText={setPassword}
-                        style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
-                        placeholder="Password"
-                        placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
-                        secureTextEntry
-                    />
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            value={password}
+                            onChangeText={setPassword}
+                            style={[styles.input, { flex: 1, borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                            placeholder="Password"
+                            placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
+                            secureTextEntry={!showPassword}
+                        />
+                        <IconButton
+                            icon={<Icon as={Ionicons} name={showPassword ? "eye-off" : "eye"} size={5} color="muted.400" />}
+                            onPress={() => setShowPassword(!showPassword)}
+                        />
+                    </View>
                     {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-                    <TextInput
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
-                        placeholder="Confirm Password"
-                        placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
-                        secureTextEntry
-                    />
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            style={[styles.input, { flex: 1, borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                            placeholder="Confirm Password"
+                            placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
+                            secureTextEntry={!showConfirmPassword}
+                        />
+                        <IconButton
+                            icon={<Icon as={Ionicons} name={showConfirmPassword ? "eye-off" : "eye"} size={5} color="muted.400" />}
+                            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    </View>
                     {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
                 </View>
 
@@ -133,34 +148,35 @@ const validatePassword = (password) => {
                 >
                     <Text style={styles.proceedText}>Next</Text>
                 </TouchableOpacity>
-                
-                {!hasErrors && (
-                    <>
-                        <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: '700' }}>Or</Text>
-                        <View style={styles.view1}>
-                            <View style={styles.view2}>
-                                <TouchableOpacity style={styles.button}>
-                                    <Image
-                                        source={GoogleLogoW}
-                                        style={styles.logo2}
-                                    />
-                                    <Text style={styles.textstyle1}>Login with Google</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.button}>
-                                    <Image
-                                        source={FbLogoW}
-                                        style={styles.logo2}
-                                    />
-                                    <Text style={styles.textstyle1}>Login with Facebook</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </>
-                )}
+                {!showOauth&&
+                <>
+                <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: '700' }}>Or</Text>              
+                <View style={styles.view1}>
+                    <View style={styles.view2}>
+                        <TouchableOpacity style={styles.button}>
+                            <Image
+                                source={GoogleLogoW}
+                                style={styles.logo2}
+                            />
+                            <Text style={styles.textstyle1}>Login with Google</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button}>
+                            <Image
+                                source={FbLogoW}
+                                style={styles.logo2}
+                            />
+                            <Text style={styles.textstyle1}>Login with Facebook</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                </>
+                }
             </LinearGradient>
         </View>
+        </NativeBaseProvider>
+
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -198,14 +214,19 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: "10%",
     },
-    input: {
-        backgroundColor: '#FFFFFFEC',
-        borderRadius: 10,
-        height: 50,
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        fontSize: 16,
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         borderWidth: 2,
+        borderRadius: 10,
+        backgroundColor: '#FFFFFFEC',
+        marginBottom: 20,
+        paddingHorizontal: 10,
+    },
+    input: {
+        height: 50,
+        paddingHorizontal: 10,
+        fontSize: 16,
     },
     errorText: {
         color: 'white',
@@ -221,40 +242,46 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view2: {
-        width: "110%",
-        marginLeft: '-5%',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "space-around",
     },
     button: {
+        backgroundColor: '#FFFFFF78',
+        borderColor: "#ffffff",
+        borderWidth: 1,
+        padding: 15,
+        width: '100%',
+        height: "45%",
+        borderRadius: 10,
         flexDirection: 'row',
-        backgroundColor: 'white',
-        borderRadius: 35,
-        width: "100%",
         alignItems: 'center',
-        marginBottom: "5%",
-    },
-    logo2: {
-        width: "25%",
-        height: 70,
-        borderRadius: 0,
-        marginHorizontal: 10,
-    },
-    textstyle1: {
-        fontSize: 20,
-        color: "#AD669E",
-        fontWeight: '500',
+        justifyContent: 'center',
+        marginBottom: 10,
     },
     proceedButton: {
-        borderRadius: 25,
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         width: '100%',
-        paddingVertical: 15,
+        height: '8%',
         alignItems: 'center',
+        justifyContent: 'center',
         marginBottom: 20,
     },
     proceedText: {
         color: '#FFFFFF',
+        fontSize: 20,
+        fontWeight: '700',
+    },
+    textstyle1: {
+        color: "black",
         fontSize: 18,
         fontWeight: '600',
+        marginLeft: 10,
+    },
+    logo2: {
+        width: 30,
+        height: 30,
     },
 });
 
