@@ -29,23 +29,72 @@ const AcountDet = () => {
     const [showSpiner,setShowSpiner]=useState(false)
 ////////////////////////////////////////////////////////////////
 
-const AddNewUser=async()=>{
-    setShowSpiner(true)
-    let infoUser={
-        email:email,
-        password:password, 
-        full_name:fullname,
-        phone_number:phonenbr,
-        sexe:genreA,
-        profile_picture_url:'',
-        grade:0,
-        region:selectedRegion
+const AddNewUser = async () => {
+    if (!fullname) {
+        alert('Please enter your full name.');
+        return;
     }
-    try{
-        const response = await axios.post(Port+'/users/'+infoUser)
+    if (!phonenbr) {
+        alert('Please enter your phone number.');
+        return;
+    }
+    if (!selectedRegion) {
+        alert('Please select your region.');
+        return;
+    }
+    if (!birthDate) {
+        alert('Please select your birth date.');
+        return;
+    }
 
-    }catch(e){}
-}
+    // Calculate the user's age
+    const today = new Date();
+    const birthDateObj = new Date(birthDate);
+    const age = today.getFullYear() - birthDateObj.getFullYear();
+    const monthDifference = today.getMonth() - birthDateObj.getMonth();
+    const dayDifference = today.getDate() - birthDateObj.getDate();
+
+    // Adjust the age if the birth date hasn't occurred yet this year
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+    }
+
+    // Check if user is at least 16 years old
+    if (age < 16) {
+        alert('You must be at least 16 years old.');
+        return;
+    }
+
+    setShowSpiner(true); // Start spinner
+    
+    let infoUser = {
+        email: email,
+        password: password,
+        full_name: fullname,
+        phone_number: phonenbr,
+        sexe: genreA,
+        profile_picture_url: '',
+        grade: 0,
+        region: selectedRegion,
+        birthdate: birthDate, // Include birthdate in user info
+    };
+
+    try {
+        const response = await axios.post(Port + '/users/', infoUser); // Send user data to backend
+        if (response.status === 200) { // If the request was successful
+            setShowSpiner(false); // Stop spinner
+            alert('User added successfully!'); // Notify user
+            // Optionally, reset form or navigate to another page
+        } else {
+            throw new Error('Failed to add user'); // Handle non-200 status
+        }
+    } catch (e) {
+        setShowSpiner(false); // Stop spinner in case of error
+        alert('Error adding user: ' + e.message); // Notify user of error
+    }
+};
+
+
 
 ////////////////////////////////////////////////////////////////
     const regions = [
@@ -152,7 +201,7 @@ const AddNewUser=async()=>{
                 </View>
                     {!showSpiner?
                 <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genreA === 'man' ? '#2C9AEE' : '#AD669E' }]}
-                onPress={()=>{}}
+                onPress={()=>{AddNewUser()}}
                 >
                     <Text style={styles.proceedText}>Proceed</Text>
                 </TouchableOpacity>

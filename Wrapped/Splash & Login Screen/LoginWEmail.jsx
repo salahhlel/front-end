@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading } from "native-base";
 import BackIcon from '../assets/flecheIcon.png';
 import GoogleLogoW from "../assets/googleLogoW.png"
 import FbLogoW from "../assets/fbLogoW.png"
 import LogoWarpeed from '../assets/logo2.png'
+import axios from 'axios';
+import PORT from '../Port';
 
 const LoginWEmail = () => {
     const navigation = useNavigation();
@@ -16,16 +19,52 @@ const LoginWEmail = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [showSpiner,setShowSpiner]=useState(false)
+
+
     const handleLogin = () => {
+        setShowSpiner(true)
         // Handle login logic here, e.g., validate email and password, authenticate user
         if (!email || !password) {
             alert('Please fill out both fields.');
+        setShowSpiner(false)
+
         } else {
             // For example, navigate to the home screen on successful login
-            navigation.navigate("HomeScreen", { genre });
+            Login()
         }
     };
+    const Login = async () => {
+        let infoUser = {
+            email: email,
+            password: password
+        };
+        
+        try {
+            const response = await axios.post(PORT + "/auth/login", infoUser); // Corrected URL format
+            
+            if (response.status === 200) {
+                const token = response.data.token; // Assuming the token is in the response
+                localStorage.setItem('authToken', token); // Store token in localStorage (or sessionStorage)
+                alert('Login successful!'); // Notify user of success
+                // Redirect user to a dashboard or home page
+                // e.g., navigate('/dashboard') if using React Router
+            } else {
+                throw new Error('Login failed'); // Handle non-200 responses
+            }
+        } catch (e) {
+            alert('Error logging in: ' + e.message); // Notify user of error
+        }
+    };
+    
+///////////////////////////NATIVE BASE//////////////////////////////
 
+    const ExampleSpiner = () => {
+        return <HStack space={2} justifyContent="center" mb={10}>
+            <Spinner color={genreA === 'man' ? "cyan.800" : "indigo.800"}  size="lg" />
+          </HStack>;
+      };
+///////////////////////////NATIVE BASE//////////////////////////////
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -75,13 +114,17 @@ const LoginWEmail = () => {
                     }}                >
                     <Text style={styles.forgetpass}>Forget Password !</Text>
                 </TouchableOpacity>
-                
+                {!showSpiner?
                 <TouchableOpacity 
                     style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}
                     onPress={handleLogin} // Handle login action
                 >
                     <Text style={styles.proceedText}>Log In</Text>
                 </TouchableOpacity>
+                :
+                <ExampleSpiner/>
+
+            }
                 
                 
                   
