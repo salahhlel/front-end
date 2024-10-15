@@ -24,9 +24,9 @@ const UpdatePage = () => {
       <UserForm />
     </SafeAreaView>
 
-          {/* <View style={styles.footerContainer}>
+          <View style={styles.footerContainer}>
         <Footer />
-      </View> */}
+      </View>
         </View>
     )
 }

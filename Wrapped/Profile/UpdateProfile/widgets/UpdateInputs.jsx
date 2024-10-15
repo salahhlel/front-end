@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Button, Alert } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 const UserForm = () => {
@@ -18,7 +18,7 @@ const UserForm = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Nom complet</Text>
+      <Text style={styles.label}>Full Name</Text>
       <TextInput
         style={styles.input}
         placeholder="Entrer votre nom complet"
@@ -26,7 +26,7 @@ const UserForm = () => {
         onChangeText={setFullName}
       />
 
-      <Text style={styles.label}>Date de naissance</Text>
+      <Text style={styles.label}>Birth Day</Text>
       <TextInput
         style={styles.input}
         placeholder="JJ/MM/AAAA"
@@ -35,7 +35,7 @@ const UserForm = () => {
         keyboardType="numeric"
       />
 
-      <Text style={styles.label}>Localisation</Text>
+      <Text style={styles.label}>Location</Text>
       <TextInput
         style={styles.input}
         placeholder="Entrer votre localisation"
@@ -57,7 +57,13 @@ const UserForm = () => {
         </Picker>
       </View>
 
-      <Button title="Soumettre" onPress={handleSubmit} />
+      {/* <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.button}
+          onPress={handleSubmit}
+          >
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+        </View> */}
     </View>
   );
 };
@@ -70,6 +76,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginVertical: 10,
+    color:"#AD669E",
+    fontWeight:"500"
   },
   input: {
     height: 40,
@@ -87,6 +95,24 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 40,
+    width: '100%',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#AD669E',
+    padding: 10,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
   },
 });
