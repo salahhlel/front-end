@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity ,ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 const UserForm = () => {
   const [fullName, setFullName] = useState('');
   const [birthDay, setBirthDay] = useState('');
   const [location, setLocation] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('');
 
   const handleSubmit = () => {
@@ -18,6 +20,7 @@ const UserForm = () => {
 
   return (
     <View style={styles.container}>
+      <ScrollView style={{marginBottom:'20%'}}>
       <Text style={styles.label}>Full Name</Text>
       <TextInput
         style={styles.input}
@@ -56,6 +59,20 @@ const UserForm = () => {
           <Picker.Item label="Autre" value="Autre" />
         </Picker>
       </View>
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Entrer votre email"
+        value={location}
+        onChangeText={setEmail}
+      />
+       <Text style={styles.label}>Phone</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="+216"
+        value={location}
+        onChangeText={setPhone}
+      />
 
       {/* <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.button}
@@ -64,6 +81,7 @@ const UserForm = () => {
             <Text style={styles.buttonText}>Update</Text>
           </TouchableOpacity>
         </View> */}
+        </ScrollView>
     </View>
   );
 };
@@ -80,9 +98,9 @@ const styles = StyleSheet.create({
     fontWeight:"500"
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: '#ccc',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
@@ -94,8 +112,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   picker: {
-    height: 40,
+    height: 50,
     width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 2,
+    borderRadius: 5,
+    paddingHorizontal: 10,
   },
   button: {
     flex: 1,

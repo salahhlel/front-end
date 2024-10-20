@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import ProfileCard from './widgets/ProfileCard';
 import MyActivitie from './widgets/MyActivites';
 import MyWordrobes from './widgets/MyWordrobes';
+import MySales from './widgets/MySales';
 import Footer from '../../widgets/Footer';
 
 const screenWidth = Dimensions.get('window').width;
@@ -11,14 +12,14 @@ const screenWidth = Dimensions.get('window').width;
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const underlinePosition = useRef(new Animated.Value(0)).current; // This controls the underline position
-  const tabWidth = screenWidth / 2; // Adjusted tab width to make them scrollable
+  const tabWidth = screenWidth / 2.6; // Adjusted tab width to make them scrollable
 
   // Animate the underline
   const handleTabSwitch = (index) => {
     setActiveTab(index);
     Animated.timing(underlinePosition, {
       toValue: index * tabWidth, // Move underline to the selected tab
-      duration: 300,
+      duration: 200,
       useNativeDriver: false,
     }).start();
   };
@@ -50,6 +51,9 @@ const ProfilePage = () => {
           <TouchableOpacity onPress={() => handleTabSwitch(2)} style={styles.tab}>
             <Text style={[styles.tabText, activeTab === 2 ? styles.activeText : null]}>My Evolution</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleTabSwitch(3)} style={styles.tab}>
+            <Text style={[styles.tabText, activeTab === 3 ? styles.activeText : null]}>My Sales</Text>
+          </TouchableOpacity>
 
           <Animated.View
             style={[
@@ -68,13 +72,10 @@ const ProfilePage = () => {
 
       {/* Content Section */}
       <View style={styles.contentContainer}>
-        {activeTab === 0 ? (
-          <MyActivitie />
-        ) : activeTab === 1 ? (
-          <MyWordrobes />
-        ) : (
-          <Text>My Evolution</Text>
-        )}
+        {activeTab === 0 && <MyActivitie />}
+        {activeTab === 1 && <MyWordrobes />}
+        {activeTab === 2 && <Text>My Evolution</Text>}
+        {activeTab === 3 && <MySales />}
       </View>
 
       {/* Fixed Footer */}
@@ -112,12 +113,12 @@ const styles = StyleSheet.create({
     width: screenWidth * 1.5, // Increase the width for scrollable tabs
   },
   tab: {
-    width: screenWidth / 2, // Adjust the width of each tab
+    width: screenWidth / 2.6, // Adjust the width of each tab
     alignItems: 'center',
     paddingBottom: 10,
   },
   tabText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'black',
     fontWeight: '400',
   },
@@ -127,14 +128,15 @@ const styles = StyleSheet.create({
   underline: {
     position: 'absolute',
     bottom: 0,
-    left: 0, // Start from the left of the tab container
+    left: 10, // Start from the left of the tab container
     height: 3,
-    width: screenWidth / 2, // Underline width based on number of tabs
+    width: screenWidth / 3, // Underline width based on number of tabs
     backgroundColor: '#ffb6c8', // Underline color
   },
   contentContainer: {
     flex: 100,
     paddingBottom: "50%", // Ensure content does not overlap with the footer
+    
   },
   footerContainer: {
     

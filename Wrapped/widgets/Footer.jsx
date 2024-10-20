@@ -2,15 +2,22 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import icons
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const FooterWithConcaveShape = () => {
+
+  const navigation = useNavigation();
+  const route = useRoute();
   // State to manage the selected icon
   const [selectedIcon, setSelectedIcon] = useState(null);
 
   // Handle icon click
   const handleIconPress = (iconName) => {
     setSelectedIcon(iconName);
+    if(iconName==="person"){
+      navigation.navigate("ProfilePage", );
+    }
   };
 
   // Handle circle click
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     width: 80, // Adjust size
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#FFFFFFFF',
+    backgroundColor: '#FFB6C8',
     borderWidth: 0,
     borderColor: '#ccc',
     shadowColor: '#000',

@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import iconSettings from '../../../assets/settings.png'
+import iconSettings from '../../../assets/settings.png';
+import { useRoute, useNavigation } from '@react-navigation/native';
+
 const ProfileCard = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
   return (
     <View style={styles.card}>
       {/* User Info Section */}
@@ -38,14 +42,22 @@ const ProfileCard = () => {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button1}>
+        <TouchableOpacity style={styles.button1}
+        onPress={()=>{
+          navigation.navigate("SettingsPage", );
+        }}
+        >
             <Image
             source={iconSettings}
             style={{width:24,height:24,marginRight:15,marginLeft:10}}
             />
           <Text style={styles.buttonText}>Settings</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+        onPress={()=>{
+          navigation.navigate("UpdatePage", );
+        }}
+        >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>

@@ -12,6 +12,8 @@ import ForgetPassword from './Splash & Login Screen/ForgetPass';
 import NPassword from './Splash & Login Screen/Npaswword';
 import ProfilePage from './Profile/ProfilePage/ProfilePage';
 import UpdatePage from './Profile/UpdateProfile/UpdatePage';
+import SettingsPage from './Profile/Sitings/SettingsPage';
+import PostDetails from './Profile/PostDetails';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -28,8 +30,10 @@ export default function App() {
         <Stack.Screen name="ForgetPassword" options={{ headerShown: false }} component={ForgetPassword}/>
         <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/> */}
         {/* ///////////////////////////////////////////////////////////////////////////////////////// */}
-        {/* <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/> */}
+        <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
+        <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
+        {/* <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
