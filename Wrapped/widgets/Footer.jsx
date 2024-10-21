@@ -18,6 +18,9 @@ const FooterWithConcaveShape = () => {
     if(iconName==="person"){
       navigation.navigate("ProfilePage", );
     }
+    if(iconName==="add"){
+      navigation.navigate("AddPost");
+    }
   };
 
   // Handle circle click

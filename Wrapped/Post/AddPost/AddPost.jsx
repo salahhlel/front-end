@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AddImage from './widgets/AddImage.jsx'
 import InputsAsk from './widgets/InputsAsk.jsx';
+import Footer from '../../widgets/Footer.jsx'
 const AddPost=()=>{
 
     return(
+        
         <View style={styles.view1}>
             <View style={styles.view2}>
             <AddImage/>
