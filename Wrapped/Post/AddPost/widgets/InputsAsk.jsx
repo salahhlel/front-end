@@ -7,16 +7,21 @@ const InputsAsk=()=>{
     const [compositions, setCompositions] = React.useState("");
     const [occasion , setOccasion ] = React.useState("");
     const [description, setDescription] = React.useState(""); 
-
-    const Example = () => {
+    const Example = ({ text, selectedValue, onValueChange }) => {
+        //////modification future => il doit choisir plusieur compositions
         return (
-          <Center>
+          <Center style={styles.boxContainer2}>
+            <Text style={{fontSize:16,fontWeight:"bold"}}>{text}</Text>
             <Box style={styles.boxContainer}>
+                <Image
+                source={iconAddImg}
+                style={{height:24, width:24,marginTop:10}}
+                />
               <Select
-                selectedValue={compositions}
-                minWidth="350"
-                accessibilityLabel="What are the compositions of your outfit?"
-                placeholder="What are the compositions of your outfit?"
+                selectedValue={selectedValue}
+                minWidth="330"
+                accessibilityLabel=""
+                placeholder=""
                 _selectedItem={{
                   bg: "pink.200", // Couleur de fond de l'élément sélectionné
                   endIcon: <CheckIcon size="5" />,
@@ -29,7 +34,7 @@ const InputsAsk=()=>{
                     borderWidth: 0, // Supprime la bordure par défaut
                   }}
                 style={styles.select}
-                onValueChange={itemValue => setCompositions(itemValue)}
+                onValueChange={onValueChange}
               >
                 <Select.Item label="UX Research" value="ux" />
                 <Select.Item label="Web Development" value="web" />
@@ -43,6 +48,8 @@ const InputsAsk=()=>{
       };
     return(
         <NativeBaseProvider>
+            <ScrollView>
+
             <View
             style={styles.textArea}>
                 <View style={{flexDirection:"row"}}>
@@ -61,8 +68,17 @@ const InputsAsk=()=>{
                     onChangeText={text => setDescription(text)}
                 />
             </View>
-            <Example/>
-            <Example/>
+            <Example 
+              text={"What are the compositions of your outfit?"}
+              selectedValue={compositions}
+              onValueChange={itemValue => setCompositions(itemValue)}
+            />
+            <Example 
+             text={"For what occasion is your outfit?"}
+             selectedValue={occasion}
+             onValueChange={itemValue => setOccasion(itemValue)}
+              />
+            </ScrollView>
         </NativeBaseProvider>
 
     )
@@ -70,6 +86,24 @@ const InputsAsk=()=>{
 }
 const styles = StyleSheet.create({
     boxContainer: {
+        maxWidth: 400,
+        borderColor: '#C8C8C86D', 
+        borderWidth: 0,
+        borderRadius: 8,
+        padding: 5,
+        backgroundColor: '#fff', // Fond blanc pour le composant
+        marginBottom: '10%',
+        flexDirection:'row',
+        
+        // Ombre pour iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 }, // Déplacement horizontal et vertical
+        shadowOpacity: 0.3, // Opacité de l'ombre
+        shadowRadius: 4, // Rayon de l'ombre
+    
+        // Ombre pour Android
+      },
+      boxContainer2: {
         maxWidth: 400,
         borderColor: '#C8C8C86D', 
         borderWidth: 2,

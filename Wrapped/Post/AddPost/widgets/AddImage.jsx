@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     Addimage:{
         width: '48%',
         height: '80%',
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: '#F08DB7',
         borderStyle: 'dashed',
         justifyContent: 'center',
