@@ -42,7 +42,7 @@ const LoginWEmail = () => {
         
         try {
             setShowSpiner(true)
-            const response = await axios.post(PORT + "auth/login", infoUser); // Corrected URL format            
+            const response = await axios.post(PORT + "/auth/login", infoUser); // Corrected URL format            
             if (response.status === 200) {
                 const token = response.data.token; // Assuming the token is in the response
                 const idUser=response.data.idUser

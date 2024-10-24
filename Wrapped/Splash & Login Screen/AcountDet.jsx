@@ -50,7 +50,7 @@ const AddNewUser = async () => {
     // Calculate the user's age
     const today = new Date();
     const birthDateObj = new Date(birthDate);
-    const age = today.getFullYear() - birthDateObj.getFullYear();
+    let age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDifference = today.getMonth() - birthDateObj.getMonth();
     const dayDifference = today.getDate() - birthDateObj.getDate();
 
@@ -73,17 +73,17 @@ const AddNewUser = async () => {
         full_name: fullname,
         phone_number: phonenbr,
         sexe: genreA === 'man' ? 'men' : 'female', // Adjust the gender value
-        profile_picture_url: '',
+        profile_picture_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYmkp9a2rrD1Sskb9HLt5mDaTt4QaIs8CcBg&s',
         grade: 0,
         region: selectedRegion,
         birthdate: birthDate,
     };
     try {
-        const response = await axios.post(Port + '/users/', infoUser); // Send user data to backend
+        
+        const response = await axios.post(Port + '/users', infoUser); // Send user data to backend
         if (response.status === 200) { // If the request was successful
             setShowSpiner(false); // Stop spinner
-            alert('User added successfully!'); // Notify user
-            // Optionally, reset form or navigate to another page
+            navigation.navigate("LoginWEmail", { genre });
         } else {
             throw new Error('Failed to add user'); // Handle non-200 status
         }
@@ -173,21 +173,22 @@ const AddNewUser = async () => {
                     <Example />
 
                     <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                        <TextInput
-                            style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color: genreA === 'man' ? '#1870B3' : '#AD669E' }]}
-                            placeholderTextColor={'#AD669E'}
-                            value={birthDate.toLocaleDateString()}
-                        />
-                    </TouchableOpacity>
+                    <TextInput
+                        style={[styles.input, { borderColor: genreA === 'man' ? '#1870B3' : '#AD669E', color: genreA === 'man' ? '#1870B3' : '#AD669E' }]}
+                        placeholderTextColor={'#AD669E'}
+                        value={birthDate.toLocaleDateString()} // Affiche la date sélectionnée
+                        editable={false} // Empêche l'édition manuelle pour forcer l'utilisation du DateTimePicker
+                    />
+                </TouchableOpacity>
 
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={birthDate}
-                            mode="date"
-                            display="default"
-                            onChange={onChange}
-                        />
-                    )}
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={birthDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChange}
+                    />
+                )}
                 </View>
 
                 <View style={styles.genderContainer}>
