@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading } from "native-base";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackIcon from '../assets/flecheIcon.png';
 import GoogleLogoW from "../assets/googleLogoW.png"
 import FbLogoW from "../assets/fbLogoW.png"
@@ -22,8 +23,7 @@ const LoginWEmail = () => {
     const [showSpiner,setShowSpiner]=useState(false)
 
 
-    const handleLogin = () => {
-        setShowSpiner(true)
+    const handleLogin =() => {
         // Handle login logic here, e.g., validate email and password, authenticate user
         if (!email || !password) {
             alert('Please fill out both fields.');
@@ -41,18 +41,20 @@ const LoginWEmail = () => {
         };
         
         try {
-            const response = await axios.post(PORT + "/auth/login", infoUser); // Corrected URL format
-            
+            setShowSpiner(true)
+            const response = await axios.post(PORT + "auth/login", infoUser); // Corrected URL format            
             if (response.status === 200) {
                 const token = response.data.token; // Assuming the token is in the response
-                localStorage.setItem('authToken', token); // Store token in localStorage (or sessionStorage)
-                alert('Login successful!'); // Notify user of success
-                // Redirect user to a dashboard or home page
-                // e.g., navigate('/dashboard') if using React Router
+                const idUser=response.data.idUser
+                await AsyncStorage.setItem('authToken', token);
+                await AsyncStorage.setItem('idUser', idUser.toString());    
+                navigation.navigate("ProfilePage", { token,idUser });
             } else {
                 throw new Error('Login failed'); // Handle non-200 responses
             }
         } catch (e) {
+            console.log(e);
+            
             alert('Error logging in: ' + e.message); // Notify user of error
         }
     };
@@ -61,11 +63,12 @@ const LoginWEmail = () => {
 
     const ExampleSpiner = () => {
         return <HStack space={2} justifyContent="center" mb={10}>
-            <Spinner color={genreA === 'man' ? "cyan.800" : "indigo.800"}  size="lg" />
+            <Spinner color={genre === 'man' ? "cyan.800" : "indigo.800"}  size="lg" />
           </HStack>;
       };
 ///////////////////////////NATIVE BASE//////////////////////////////
     return (
+        <NativeBaseProvider>
         <View style={styles.container}>
             <LinearGradient
                 colors={genre === 'man' ? ['#2C9AEE', '#ABC0FF'] : ['#AD669E', '#FFB6C8']}
@@ -130,6 +133,7 @@ const LoginWEmail = () => {
                   
             </LinearGradient>
         </View>
+        </NativeBaseProvider>
     );
 };
 

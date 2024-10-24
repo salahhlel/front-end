@@ -8,6 +8,8 @@ import BackIcon from '../assets/flecheIcon.png';
 import GoogleLogoW from "../assets/googleLogoW.png";
 import FbLogoW from "../assets/fbLogoW.png";
 import LogoWarpeed from '../assets/logo2.png';
+import axios from 'axios';
+
 
 const SignIn = () => {
     const navigation = useNavigation();
@@ -53,7 +55,7 @@ const SignIn = () => {
         // Validate password
         if (!validatePassword(password)) {
             console.log(password);
-            setPasswordError('Password must contain at least one uppercase letter, one digit, and be 12 characters or less.');
+            setPasswordError('Password must contain at least one uppercase letter, one digit, and be 8 characters or less.');
             valid = false;
         } else {
             setPasswordError('');
@@ -148,7 +150,7 @@ const SignIn = () => {
                 >
                     <Text style={styles.proceedText}>Next</Text>
                 </TouchableOpacity>
-                {!showOauth&&
+                {/* {!showOauth&&
                 <>
                 <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: '700' }}>Or</Text>              
                 <View style={styles.view1}>
@@ -170,7 +172,7 @@ const SignIn = () => {
                     </View>
                 </View>
                 </>
-                }
+                } */}
             </LinearGradient>
         </View>
         </NativeBaseProvider>

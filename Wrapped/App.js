@@ -21,21 +21,21 @@ export default function App() {
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      <Stack.Navigator initialRouteName="AddPost">
-        {/* <Stack.Screen name="Splash" options={{ headerShown: false }} component={Splash} />
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen name="Splash" options={{ headerShown: false }} component={Splash} />
         <Stack.Screen name="Splash2" options={{ headerShown: false }} component={Splash2} />
         <Stack.Screen name="LoginP1" options={{ headerShown: false }} component={LoginP1} />
         <Stack.Screen name="AcountDet" options={{ headerShown: false }} component={AcountDet} />
         <Stack.Screen name="LoginWEmail" options={{ headerShown: false }} component={LoginWEmail}/>
         <Stack.Screen name="SignIn" options={{ headerShown: false }} component={SignIn}/>
         <Stack.Screen name="ForgetPassword" options={{ headerShown: false }} component={ForgetPassword}/>
-        <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/> */}
+        <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/>
         {/* ///////////////////////////////////PROFILE////////////////////////////////////////////////////// */}
-        {/* <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
+        <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
-        <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/> */}
+        <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
-        {/* <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/> */}
+        <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
 
       </Stack.Navigator>

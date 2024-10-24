@@ -72,13 +72,12 @@ const AddNewUser = async () => {
         password: password,
         full_name: fullname,
         phone_number: phonenbr,
-        sexe: genreA,
+        sexe: genreA === 'man' ? 'men' : 'female', // Adjust the gender value
         profile_picture_url: '',
         grade: 0,
         region: selectedRegion,
-        birthdate: birthDate, // Include birthdate in user info
+        birthdate: birthDate,
     };
-
     try {
         const response = await axios.post(Port + '/users/', infoUser); // Send user data to backend
         if (response.status === 200) { // If the request was successful
