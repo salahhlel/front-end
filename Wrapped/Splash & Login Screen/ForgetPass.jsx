@@ -4,11 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import LogoWarpeed from '../assets/logo2.png'
-
+import PORT from '../Port'
 const ForgetPassword = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { genre } = route.params;
+    const { genre,email } = route.params;
 
     // Create refs for each TextInput
     const inputRefs = useRef([]);
@@ -19,6 +19,38 @@ const ForgetPassword = () => {
             inputRefs.current[index + 1].focus();  // Move to the next input
         }
     };
+
+    const VerifyCode = async(email,code)=>{
+        let infoverif={
+            email:email,
+            code:code
+        }
+        try{
+            const response = await fetch(PORT+'/auth/verify-code',infoverif)
+            if(response.status===200){
+                navigation.navigate("ResetPassword", { genre,email });
+            }
+        }catch(e){}
+    }
+    const handleForgetPassword = async () => {
+        if (!email) {
+            alert('Please enter your email address.');
+            return;
+        }
+
+        try {
+            const response = await axios.post(PORT + "/auth/forgot-password", { email });
+            if (response.status === 200) {
+                alert('A reset code has been sent to your email.');
+            } else {
+                throw new Error('Error sending reset code');
+            }
+        } catch (error) {
+            console.log(error);
+            alert('Error: ' + error.message);
+        }
+    };
+
 
     return (
         <View style={styles.container}>

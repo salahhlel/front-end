@@ -23,6 +23,7 @@ const LoginWEmail = () => {
     const [showSpiner,setShowSpiner]=useState(false)
 
 
+
     const handleLogin =() => {
         // Handle login logic here, e.g., validate email and password, authenticate user
         if (!email || !password) {
@@ -54,11 +55,30 @@ const LoginWEmail = () => {
             }
         } catch (e) {
             console.log(e);
-            
+            setShowSpiner(false)
+
             alert('Error logging in: ' + e.message); // Notify user of error
         }
     };
-    
+    const handleForgetPassword = async () => {
+        if (!email) {
+            alert('Please enter your email address.');
+            return;
+        }
+
+        try {
+            const response = await axios.post(PORT + "/auth/forgot-password", { email });
+            if (response.status === 200) {
+                alert('A reset code has been sent to your email.');
+                navigation.navigate("ForgetPassword", { genre,email });
+            } else {
+                throw new Error('Error sending reset code');
+            }
+        } catch (error) {
+            console.log(error);
+            alert('Error: ' + error.message);
+        }
+    };
 ///////////////////////////NATIVE BASE//////////////////////////////
 
     const ExampleSpiner = () => {
@@ -108,13 +128,7 @@ const LoginWEmail = () => {
                     />
                 </View>
                 <TouchableOpacity style={{ marginBottom: '15%' }}
-                    onPress={() => {
-                        if (!email) {
-                            alert('Please enter your email address.');
-                        } else {
-                            navigation.navigate("ForgetPassword", { genre });
-                        }
-                    }}                >
+                    onPress={handleForgetPassword}              >
                     <Text style={styles.forgetpass}>Forget Password !</Text>
                 </TouchableOpacity>
                 {!showSpiner?
