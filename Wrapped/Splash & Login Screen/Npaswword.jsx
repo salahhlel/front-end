@@ -1,13 +1,47 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
-import LogoWarpeed from '../assets/logo2.png'
+import LogoWarpeed from '../assets/logo2.png';
+import axios from 'axios';
+import PORT from '../Port'
+
 const NPassword = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { genre } = route.params;
+    const { genre,email } = route.params;
+
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const restePassword = async () =>{
+        let infoRest={
+            email:email,
+            newPassword:password
+        }
+        try{
+            const response=await axios.post(PORT+"/auth/reset-password",infoRest)
+            console.log(email);
+            if(response.status===200){
+                navigation.navigate("LoginWEmail" ,{genre})
+                
+            }
+        }catch (error) {
+            console.log(error);
+            alert('Error: ' + error.message);
+        }
+    }
+
+    const handleVerification = () => {
+        if (password !== confirmPassword) {
+            setErrorMessage("Les mots de passe ne correspondent pas");
+        } else {
+            setErrorMessage('');
+            restePassword()
+        }
+    };
 
 
     return (
@@ -33,28 +67,34 @@ const NPassword = () => {
                     source={LogoWarpeed}
                     style={styles.logo1}
                 />
+                <View style={styles.inputContainer}>
                 <View style={{flexDirection:"column",alignItems:"center"}}>
                 <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>Entrer votre </Text>
                 <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>nouveau mot de passe </Text>
                 </View>
-                <View style={styles.inputContainer}>
+                <View style={{marginTop:20}}>
                     <TextInput
                         style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
                         placeholder="New Password"
                         placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
-                        // value={email}
-                        // onChangeText={setEmail} // Update email state
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
                     />
                     <TextInput
                         style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
                         placeholder="Confirm New Password"
                         placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
                         secureTextEntry
-                        // value={password}
-                        // onChangeText={setPassword} // Update password state
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
                     />
+                    {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
                 </View>
-                <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}>
+                </View>
+                <TouchableOpacity 
+                onPress={handleVerification}
+                style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}>
                     <Text style={styles.proceedText}>Verif</Text>
                 </TouchableOpacity>
             </LinearGradient>
@@ -89,7 +129,18 @@ const styles = StyleSheet.create({
         height: "25%",
         marginTop: "10%",
     },
-
+    logo: {
+        width: 20,
+        height: 35,
+        marginRight: "3%",
+    },
+    errorText: {
+        color: '#FFFFFFFF', // Couleur rouge pour le message d'erreur
+        fontSize: 14,
+        marginTop: -15,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
     proceedButton: {
         borderRadius: 25,
         width: '100%',

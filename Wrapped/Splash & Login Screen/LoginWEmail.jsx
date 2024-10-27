@@ -65,18 +65,30 @@ const LoginWEmail = () => {
             alert('Please enter your email address.');
             return;
         }
-
         try {
-            const response = await axios.post(PORT + "/auth/forgot-password", { email });
-            if (response.status === 200) {
-                alert('A reset code has been sent to your email.');
-                navigation.navigate("ForgetPassword", { genre,email });
+            if (await handleEmailExist(email)) {
+                const response = await axios.post(PORT + "/auth/forgot-password", { email });
+                if (response.status === 200) {
+                    alert('A reset code has been sent to your email.');
+                    navigation.navigate("ForgetPassword", { genre, email });
+                } else {
+                    throw new Error('Error sending reset code');
+                }
             } else {
-                throw new Error('Error sending reset code');
+                alert('Email not found');
             }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    };
+    const handleEmailExist = async (email) => {
+        try {
+            const response = await axios.post(PORT + "/auth/check-email", { email });
+            return response.status === 200 && response.data.exists;
         } catch (error) {
             console.log(error);
             alert('Error: ' + error.message);
+            return false;
         }
     };
 ///////////////////////////NATIVE BASE//////////////////////////////

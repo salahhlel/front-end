@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState,useEffect  } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import LogoWarpeed from '../assets/logo2.png'
+import axios from 'axios';
 import PORT from '../Port'
 const ForgetPassword = () => {
     const navigation = useNavigation();
@@ -12,11 +13,23 @@ const ForgetPassword = () => {
 
     // Create refs for each TextInput
     const inputRefs = useRef([]);
+    const [code, setCode] = useState(''); // State for the 4-digit code
+    const [counter, setCounter] = useState(90); // Initialiser à 90 secondes (1 minute 30)
+    const [isExpired, setIsExpired] = useState(false); // État pour vérifier si le compteur est expiré
 
     // Function to handle input change and focus on the next TextInput
     const handleInputChange = (text, index) => {
+        // Update the code as the digits are entered
+        const newCode = code.slice(0, index) + text + code.slice(index + 1);
+        setCode(newCode);
+
         if (text.length === 1 && index < inputRefs.current.length - 1) {
             inputRefs.current[index + 1].focus();  // Move to the next input
+        }
+
+        // Log the code when it's complete
+        if (newCode.length === 4) {
+            console.log('Full code:', newCode); // This will display the full 4-digit code
         }
     };
 
@@ -26,11 +39,20 @@ const ForgetPassword = () => {
             code:code
         }
         try{
-            const response = await fetch(PORT+'/auth/verify-code',infoverif)
+            const response = await axios.post(PORT+'/auth/verify-code',infoverif)
             if(response.status===200){
-                navigation.navigate("ResetPassword", { genre,email });
+                if(response.data.valid===false){
+                    alert('Error : '+response.data.message)
+                    setCode('')
+                }
+                else{
+                    navigation.navigate("NPassword" ,{genre,email})
+                }
             }
-        }catch(e){}
+        }catch (error) {
+            console.log(error);
+            alert('Error: ' + error.message);
+        }
     }
     const handleForgetPassword = async () => {
         if (!email) {
@@ -50,7 +72,21 @@ const ForgetPassword = () => {
             alert('Error: ' + error.message);
         }
     };
-
+    const handleResendCode = () => {
+        setCounter(90); // Réinitialiser le compteur à 90 secondes
+        setIsExpired(false); // Réinitialiser l'état expiré
+        handleForgetPassword(); // Appel de la fonction pour renvoyer le code
+    };
+    ///////////////////////////////useEffects//////////////////////////////////////////////////////////////////////
+    useEffect(() => {
+        if (counter > 0) {
+            const timer = setTimeout(() => setCounter(counter - 1), 1000);
+            return () => clearTimeout(timer);
+        } else {
+            setIsExpired(true); // Activer l'état expiré quand le compteur atteint 0
+        }
+    }, [counter]);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <View style={styles.container}>
@@ -89,9 +125,17 @@ const ForgetPassword = () => {
                         />
                     ))}
                 </View>
-
+                {isExpired ? (
+                <TouchableOpacity onPress={handleResendCode}>
+                    <Text style={styles.resendText}>Renvoyer le code</Text>
+                </TouchableOpacity>
+            ) : (
+                <Text style={styles.counterText}>
+                    {`Code expires in ${Math.floor(counter / 60)}:${(counter % 60).toString().padStart(2, '0')}`}
+                </Text>
+            )}
                 <TouchableOpacity 
-                onPress={()=>navigation.navigate("NPassword" ,{genre})}
+                onPress={()=>{VerifyCode(email,code)}}
                 style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}>
                     <Text style={styles.proceedText}>Verif</Text>
                 </TouchableOpacity>
@@ -144,7 +188,20 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         width: "15%",
         textAlign: 'center',
-        margin: "5%",
+        margin: "3%",
+    },
+    counterText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    resendText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        marginTop: 10,
+        textAlign: 'center',
+        textDecorationLine: 'underline',
     },
     proceedButton: {
         borderRadius: 25,
@@ -152,6 +209,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         alignItems: 'center',
         marginBottom: 20,
+        marginTop:20
     },
     proceedText: {
         color: '#FFFFFF',
