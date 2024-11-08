@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput, Alert } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { IconButton, Icon, NativeBaseProvider  } from 'native-base';
@@ -9,6 +9,7 @@ import GoogleLogoW from "../assets/googleLogoW.png";
 import FbLogoW from "../assets/fbLogoW.png";
 import LogoWarpeed from '../assets/logo2.png';
 import axios from 'axios';
+import PORT from '../Port'
 
 
 const SignIn = () => {
@@ -27,12 +28,34 @@ const SignIn = () => {
     // State for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+    const [nextPage,setNextPage] = useState(true);
     // Email validation
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
+
+    const EmailExisting = async() =>{
+        try{
+            const response=await axios.post(PORT+"/auth/check-email",{email})
+            console.log(response.data.exists);
+            
+            if(response.status===201){
+                 alert(response.data.message)
+                 console.log(response.data.message);
+                 
+                 return false
+            }else if (response.status===200){
+                alert(response.data.message)
+                return true
+            }
+
+        }catch(e){
+            console.log(e);
+            alert('Error: ' + e.message);
+    
+        }
+    }
 
     // Password validation
     const validatePassword = (password) => {
@@ -42,38 +65,42 @@ const SignIn = () => {
 
     // Handle form submission
     const handleSubmit = () => {
-        let valid = true;
-        setShowOauth(true)
+        setShowOauth(true);
+        let isValid = true;  // Initialisez isValid (équivalent de nextPage) à true
+    
         // Validate email
         if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address.');
-            valid = false;
+            isValid = false;
+        } else if (EmailExisting()) {
+            setEmailError('Email exists already.');
+            isValid = false;
         } else {
             setEmailError('');
         }
-
+    
         // Validate password
         if (!validatePassword(password)) {
-            console.log(password);
             setPasswordError('Password must contain at least one uppercase letter, one digit, and be 8 characters or less.');
-            valid = false;
+            isValid = false;
         } else {
             setPasswordError('');
         }
-
+    
         // Validate confirm password
         if (password !== confirmPassword) {
             setConfirmPasswordError('Passwords do not match.');
-            valid = false;
+            isValid = false;
         } else {
             setConfirmPasswordError('');
         }
-
+    
         // Proceed if all validations pass
-        if (valid) {
-            navigation.navigate("AcountDet", { genre,password,email });
+        if (isValid) { // Utilisez isValid ici
+            navigation.navigate("AcountDet", { genre, password, email });
         }
     };
+    
 
     return (
         <NativeBaseProvider>

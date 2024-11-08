@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
-import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading } from "native-base";
+import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading ,Actionsheet, useDisclose} from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
@@ -8,6 +8,7 @@ import CameraIcon from '../assets/cameraIcon.png';
 import LogoWarpeed from '../assets/logo2.png';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
 import Port from '../Port'
 
@@ -17,8 +18,11 @@ const AcountDet = () => {
     const route = useRoute();
     const { genre, email, password } = route.params;
 
+    const today = new Date();
+    const minDateOfBirth = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
+    const [birthDate, setBirthDate] = useState(minDateOfBirth);
+
     const [genreA, setGenreA] = useState(genre);
-    const [birthDate, setBirthDate] = useState(new Date());
     const [fullname, setFullName] = useState('');
     const [emailA, setEmailA] = useState(email);
     const [passwordA, setPasswordA] = useState(password);
@@ -27,72 +31,128 @@ const AcountDet = () => {
 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showSpiner,setShowSpiner]=useState(false)
+
+    const [selectedImage, setSelectedImage] = useState(null);
+    const { isOpen, onOpen, onClose } = useDisclose();
 ////////////////////////////////////////////////////////////////
 
+console.log(selectedImage);
+
+
 const AddNewUser = async () => {
-    if (!fullname) {
-        alert('Please enter your full name.');
+    if (!fullname || fullname.trim().length < 3) {
+        alert('Please enter a valid full name.');
         return;
     }
-    if (!phonenbr) {
-        alert('Please enter your phone number.');
+    
+    // Validation du numéro de téléphone
+    const phonePattern = /^[0-9]{8}$/; // Ajuste selon le format de ton pays
+    if (!phonenbr || !phonePattern.test(phonenbr)) {
+        alert('Please enter a valid 10-digit phone number.');
         return;
     }
+    
     if (!selectedRegion) {
         alert('Please select your region.');
         return;
     }
+    
     if (!birthDate) {
         alert('Please select your birth date.');
         return;
     }
 
-    // Calculate the user's age
+    // Calcul de l'âge
     const today = new Date();
     const birthDateObj = new Date(birthDate);
     let age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDifference = today.getMonth() - birthDateObj.getMonth();
     const dayDifference = today.getDate() - birthDateObj.getDate();
-
-    // Adjust the age if the birth date hasn't occurred yet this year
     if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
         age--;
     }
 
-    // Check if user is at least 16 years old
     if (age < 16) {
         alert('You must be at least 16 years old.');
         return;
     }
 
-    setShowSpiner(true); // Start spinner
-    
+    // Début de l'animation du spinner
+    setShowSpiner(true);
+
+    // Préparer les informations de l'utilisateur en nettoyant les entrées
+    const sanitizedEmail = email.trim();
+    const sanitizedFullname = fullname.trim();
+    const sanitizedPhone = phonenbr.replace(/[^0-9]/g, '');
+
     let infoUser = {
-        email: email,
-        password: password,
-        full_name: fullname,
-        phone_number: phonenbr,
-        sexe: genreA === 'man' ? 'men' : 'female', // Adjust the gender value
-        profile_picture_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYmkp9a2rrD1Sskb9HLt5mDaTt4QaIs8CcBg&s',
+        email: sanitizedEmail,
+        password: password, // Idéalement, assure-toi de hacher le mot de passe côté serveur
+        full_name: sanitizedFullname,
+        phone_number: sanitizedPhone,
+        sexe: genreA === 'man' ? 'men' : 'female',
+        profile_picture_url: selectedImage.toString(),
         grade: 0,
         region: selectedRegion,
         birthdate: birthDate,
     };
+
     try {
+        const response = await axios.post(`${Port}/users`, infoUser, {
+            timeout: 5000, // Ajoute un timeout pour éviter les longs délais d'attente
+        });
         
-        const response = await axios.post(Port + '/users', infoUser); // Send user data to backend
-        if (response.status === 200) { // If the request was successful
-            setShowSpiner(false); // Stop spinner
+        if (response.status === 201) {
+            setShowSpiner(false); // Arrêter le spinner
             navigation.navigate("LoginWEmail", { genre });
         } else {
-            throw new Error('Failed to add user'); // Handle non-200 status
+            throw new Error('Failed to add user'); // Gère les autres statuts
         }
-    } catch (e) {
-        setShowSpiner(false); // Stop spinner in case of error
-        alert('Error adding user: ' + e.message); // Notify user of error
+    } catch (error) {
+        setShowSpiner(false); // Arrêter le spinner en cas d'erreur
+        console.error('Error adding user:', error); // Log l'erreur pour débogage
+        alert('Error adding user: ' + error.message);
     }
 };
 
+ const pickImageFromGallery = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert('Permission d\'accès à la galerie refusée !');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+    onClose();
+  };
+
+  const takePhotoWithCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert('Permission d\'accès à la caméra refusée !');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+    onClose();
+  };
 
 
 ////////////////////////////////////////////////////////////////
@@ -118,9 +178,16 @@ const AddNewUser = async () => {
                     accessibilityLabel="Choose Region"
                     placeholder="Choose Region"
                     _selectedItem={{
-                        bg: genreA === 'man' ? "#1870B3" : "#AD669E",
-                        endIcon: <CheckIcon size="5" />
-                    }}
+                        bg: "pink.200", // Couleur de fond de l'élément sélectionné
+                        endIcon: <CheckIcon size="5" />,
+                        borderRadius: 5, // Ajouter des bordures arrondies aux éléments sélectionnés
+                      }}
+                      _input={{
+                          borderWidth: 0, // Supprime la bordure par défaut
+                        }}
+                        _light={{
+                          borderWidth: 0, // Supprime la bordure par défaut
+                        }}
                     style={{ color: genreA === 'man' ? '#1870B3' : '#AD669E' }}
                     onValueChange={itemValue => setSelectedRegion(itemValue)}
                 >
@@ -147,12 +214,33 @@ const AddNewUser = async () => {
                 end={{ x: 0.5, y: 1 }}
                 style={styles.background}
             >
-                <TouchableOpacity style={styles.cameraButton}>
+                <TouchableOpacity 
+                onPress={onOpen}
+                style={styles.cameraButton}>
+                    {selectedImage?  
+                    <Image
+                        source={{uri:selectedImage}}
+                        style={styles.cameraIcon}
+                    />:
                     <Image
                         source={CameraIcon}
                         style={styles.cameraIcon}
                     />
+                }
                 </TouchableOpacity>
+                     <Actionsheet isOpen={isOpen} onClose={onClose}>
+                        <Actionsheet.Content>
+                        <Actionsheet.Item onPress={takePhotoWithCamera}>
+                            Prendre une photo
+                        </Actionsheet.Item>
+                        <Actionsheet.Item onPress={pickImageFromGallery}>
+                            Choisir depuis la galerie
+                        </Actionsheet.Item>
+                        <Actionsheet.Item onPress={onClose} color="red.500">
+                            Annuler
+                        </Actionsheet.Item>
+                        </Actionsheet.Content>
+                    </Actionsheet>
 
                 <View style={styles.inputContainer}>
                     <TextInput
