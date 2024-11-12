@@ -10,7 +10,11 @@ const ProfileCard = (idUser) => {
   const route = useRoute();
 
   const [load,setLoad]=useState(false)
+
   const [userCard,setUserCard]=useState([])
+  const [gradeCard,setGradeCard]=useState([])
+
+  const [idgarde,setIdgrade]=useState(null);
 
  console.log(userCard);
  
@@ -19,6 +23,8 @@ const ProfileCard = (idUser) => {
     const response= await axios.get(Port+'/users/UserCart/'+id);
     if(response.status==200){
       setUserCard(response.data)
+      setIdgrade(response.data.grade)
+      
     }
     else{
       console.log(response.status)
@@ -28,8 +34,28 @@ const ProfileCard = (idUser) => {
   }
  }
 
+ const GetGradeCart =async(id)=>{
+  try{
+      const response= await axios.get(Port+'/grades/gradename/'+idgarde);
+      if(response.status==200){
+        setGradeCard(response.data)
+        console.log(response.data);
+        
+      }
+    
+  }catch(e){
+    console.log("error :"+e);
+    
+  }
+ }
+
   useEffect(()=>{
     GetUserCart(idUser.idUser)
+    if(idgarde){
+      GetGradeCart(idgarde)
+    }else{
+      setLoad(!load)
+    }
   },[load])
 
 
@@ -46,12 +72,12 @@ const ProfileCard = (idUser) => {
         />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>{userCard.full_name}</Text>
-          <Text style={styles.userGrade}>{userCard.grade}</Text>
+          <Text style={styles.userGrade}>{gradeCard.titre}</Text>
         </View>
         {/* Sales and Basket Section */}
         <View style={styles.stats}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>2500</Text>
+            <Text style={styles.statValue}>{gradeCard.sales}</Text>
             <Text style={styles.statLabel}>Sales</Text>
           </View>
           <View style={styles.statItem}>
@@ -85,7 +111,7 @@ const ProfileCard = (idUser) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}
         onPress={()=>{
-          navigation.navigate("UpdatePage", );
+          navigation.navigate("UpdatePage",{name:userCard.full_name,grade:gradeCard.titre,idUser} );
         }}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>

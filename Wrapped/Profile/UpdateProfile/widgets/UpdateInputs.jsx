@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity ,ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const UserForm = () => {
+const UserForm = (idUser) => {
   const [fullName, setFullName] = useState('');
   const [birthDay, setBirthDay] = useState('');
   const [location, setLocation] = useState('');
@@ -21,6 +21,13 @@ const UserForm = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={{marginBottom:'20%'}}>
+
+      <View style={styles.container1}>
+      <View style={styles.line1} />
+      <Text style={styles.text1}>Informations Personnelles</Text>
+      <View style={styles.line1} />
+    </View>
+
       <Text style={styles.label}>Full Name</Text>
       <TextInput
         style={styles.input}
@@ -73,7 +80,32 @@ const UserForm = () => {
         value={location}
         onChangeText={setPhone}
       />
-
+      <View style={styles.container1}>
+      <View style={styles.line1} />
+      <Text style={styles.text1}>Change Password</Text>
+      <View style={styles.line1} />
+    </View>
+    <Text style={styles.label}>Current Password</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Entrer votre mot de passe"
+        value={fullName}
+        onChangeText={setFullName}
+      />
+       <Text style={styles.label}>New Password</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Entrer votre nouveau Password"
+        value={fullName}
+        onChangeText={setFullName}
+      />
+       <Text style={styles.label}>Repete the New Password</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Repete votre nouveau Password"
+        value={fullName}
+        onChangeText={setFullName}
+      />
       {/* <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.button}
           onPress={handleSubmit}
@@ -136,6 +168,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  container1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  line1: {
+    flex: 1,
+    height: 3,
+    backgroundColor: '#AD669E', // Light blue color for the line
+  },
+  text1: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#AD669E', // Light blue color for the text
   },
 });
 

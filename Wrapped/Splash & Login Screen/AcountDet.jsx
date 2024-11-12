@@ -203,9 +203,7 @@ const AddNewUser = async () => {
 
         const img = await uploadImage();
         
-        if (!img) {
-            throw new Error("Image upload failed");
-        }
+       
         
         console.log(img);
 

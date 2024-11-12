@@ -4,8 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import UpdateCard from './widgets/UpdateCard'
 import UserForm from './widgets/UpdateInputs';
 import Footer from '../../widgets/Footer';
+import { useRoute, useNavigation } from '@react-navigation/native';
+
 const screenWidth = Dimensions.get('window').width;
 const UpdatePage = () => {
+  const navigation = useNavigation();
+    const route = useRoute();
+    const { name, grade , idUser } = route.params;
     return(
         <View style={styles.container}>
         {/* Navigation Section */}
@@ -17,11 +22,11 @@ const UpdatePage = () => {
             style={styles.gradient}
           />
             <View style={styles.Card}>
-                <UpdateCard/>
+                <UpdateCard fullname={name} grade={grade} idUser={idUser} />
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>
-      <UserForm />
+      <UserForm idUser={idUser} />
     </SafeAreaView>
 
           <View style={styles.footerContainer}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import CameraIcon from '../../../assets/icon_camera.png'
-const UpdateCard = () => {
+const UpdateCard = ({fullname, grade,idUser}) => {
 
     return(
         <View style={styles.card}>
@@ -12,8 +12,8 @@ const UpdateCard = () => {
             style={styles.profileImage}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>Anant Raj</Text>
-            <Text style={styles.userGrade}>Grade</Text>
+            <Text style={styles.userName}>{fullname}</Text>
+            <Text style={styles.userGrade}>{grade}</Text>
           </View>
           {/* Sales and Basket Section */}
           <View style={styles.stats}>
