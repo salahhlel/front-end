@@ -1,11 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import iconSettings from '../../../assets/settings.png';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import axios from 'axios'
+import Port from '../../../Port'
 
-const ProfileCard = () => {
+const ProfileCard = (idUser) => {
   const navigation = useNavigation();
   const route = useRoute();
+
+  const [load,setLoad]=useState(false)
+  const [userCard,setUserCard]=useState([])
+
+ console.log(userCard);
+ 
+ const GetUserCart =async(id)=>{
+  try{
+    const response= await axios.get(Port+'/users/UserCart/'+id);
+    if(response.status==200){
+      setUserCard(response.data)
+    }
+    else{
+      console.log(response.status)
+    }
+  }catch(e){
+    throw new Error('Error :'+e)
+  }
+ }
+
+  useEffect(()=>{
+    GetUserCart(idUser.idUser)
+  },[load])
+
+
+
+
+
   return (
     <View style={styles.card}>
       {/* User Info Section */}
@@ -15,8 +45,8 @@ const ProfileCard = () => {
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>Anant Raj</Text>
-          <Text style={styles.userGrade}>Grade</Text>
+          <Text style={styles.userName}>{userCard.full_name}</Text>
+          <Text style={styles.userGrade}>{userCard.grade}</Text>
         </View>
         {/* Sales and Basket Section */}
         <View style={styles.stats}>

@@ -28,34 +28,37 @@ const SignIn = () => {
     // State for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [nextPage,setNextPage] = useState(true);
+    const [emailExsit,setEmailExsit] = useState(Boolean);
     // Email validation
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
 
-    const EmailExisting = async() =>{
-        try{
-            const response=await axios.post(PORT+"/auth/check-email",{email})
-            console.log(response.data.exists);
-            
-            if(response.status===201){
-                 alert(response.data.message)
-                 console.log(response.data.message);
-                 
-                 return false
-            }else if (response.status===200){
-                alert(response.data.message)
-                return true
-            }
+// Email existence check
+const EmailExisting = async () => {
+    try {
+        const response = await axios.post(PORT + "/auth/check-email", { email });
+        console.log(response.status);
 
-        }catch(e){
-            console.log(e);
-            alert('Error: ' + e.message);
-    
+        if (response.status === 201) {
+            alert(response.data.message);
+            console.log('heyy1' + response.data.message);
+            setEmailExsit(false) ;  // Email does not exist
+        } else if (response.status === 200) {
+            console.log('heyy2' + response.data.message);
+            setEmailExsit(true) ;  // Email exists
+            alert(response.data.message);
+        } else {
+            setEmailExsit(false) ;  // Default to false if status is neither 200 nor 201
         }
+    } catch (e) {
+        console.log(e);
+        alert('Error: ' + e.message);
+        setEmailExsit(false) ;  // Email does not exist
     }
+};
+
 
     // Password validation
     const validatePassword = (password) => {
@@ -63,16 +66,17 @@ const SignIn = () => {
         return regex.test(password);
     };
 
-    // Handle form submission
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setShowOauth(true);
-        let isValid = true;  // Initialisez isValid (équivalent de nextPage) à true
-    
+        let isValid = true;
+        console.log('here'+emailExsit);
+        EmailExisting()
+
         // Validate email
         if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address.');
             isValid = false;
-        } else if (EmailExisting()) {
+        } else if (!emailExsit) {  // Use await here
             setEmailError('Email exists already.');
             isValid = false;
         } else {
@@ -96,11 +100,10 @@ const SignIn = () => {
         }
     
         // Proceed if all validations pass
-        if (isValid) { // Utilisez isValid ici
+        if (isValid) {
             navigation.navigate("AcountDet", { genre, password, email });
         }
     };
-    
 
     return (
         <NativeBaseProvider>

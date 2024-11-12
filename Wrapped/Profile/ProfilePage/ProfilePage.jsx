@@ -6,10 +6,15 @@ import MyActivitie from './widgets/MyActivites';
 import MyWordrobes from './widgets/MyWordrobes';
 import MySales from './widgets/MySales';
 import Footer from '../../widgets/Footer';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ProfilePage = () => {
+const ProfilePage = ( ) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { token,idUser } = route.params;
+
   const [activeTab, setActiveTab] = useState(0);
   const underlinePosition = useRef(new Animated.Value(0)).current; // This controls the underline position
   const tabWidth = screenWidth / 2.6; // Adjusted tab width to make them scrollable
@@ -35,7 +40,7 @@ const ProfilePage = () => {
           style={styles.gradient}
         />
         <View style={styles.Card}>
-          <ProfileCard />
+          <ProfileCard idUser={idUser} />
         </View>
       </View>
 

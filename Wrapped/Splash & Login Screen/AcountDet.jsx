@@ -11,6 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
 import Port from '../Port'
+import { err } from 'react-native-svg';
 
 
 const AcountDet = () => {
@@ -33,87 +34,200 @@ const AcountDet = () => {
     const [showSpiner,setShowSpiner]=useState(false)
 
     const [selectedImage, setSelectedImage] = useState(null);
+    const [image, setImage] = useState(null);
     const { isOpen, onOpen, onClose } = useDisclose();
-////////////////////////////////////////////////////////////////
 
-console.log(selectedImage);
+    const [idgrade,setIdGrade]=useState(null)
+    ////////////////////////////////////////////////////////////////
 
+    
+const IntitalGrade=async()=>{
+    try{
+        const response= await axios.put(Port+'/grades/')
+        if(response.status==201){
+            setIdGrade(response.data.id)
+        }
+        else{
+            console.log(response.status);
+        }
+    }catch(e){
+        throw new Error('error:'+e)
+    }
+}
 
-const AddNewUser = async () => {
+const validateFullName = (fullname) => {
     if (!fullname || fullname.trim().length < 3) {
         alert('Please enter a valid full name.');
-        return;
+        return false;
     }
-    
-    // Validation du numéro de téléphone
+    return true;
+};
+console.log(selectedImage)
+
+const uploadImage = async () => {
+    if (!selectedImage) {
+      alert('Please select an image');
+      return;
+    }
+  
+    const formData = new FormData();
+    // Il est important de s'assurer que le type MIME est bien défini
+    formData.append('image', {
+      uri: selectedImage.uri,
+      name: selectedImage.uri.split('/').pop(),  // Optionnel: donner un nom à l'image
+      type: selectedImage.type || 'image/jpeg',  // Assurez-vous que le type est correctement défini
+    });
+  
+    try {
+      const response = await axios.post(Port + '/props/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.status === 201) {
+        console.log('Image uploaded successfully:', response.data);
+        return response.data.url;
+      }
+    } catch (error) {
+      console.log('Error uploading image:', error);
+    }
+  };
+// Fonction de validation du numéro de téléphone
+const validatePhoneNumber = (phonenbr) => {
     const phonePattern = /^[0-9]{8}$/; // Ajuste selon le format de ton pays
     if (!phonenbr || !phonePattern.test(phonenbr)) {
-        alert('Please enter a valid 10-digit phone number.');
-        return;
+        alert('Please enter a valid 8-digit phone number.');
+        return false;
     }
-    
+    return true;
+};
+
+// Fonction de validation de la région
+const validateRegion = (selectedRegion) => {
     if (!selectedRegion) {
         alert('Please select your region.');
-        return;
+        return false;
     }
-    
+    return true;
+};
+
+// Fonction de validation de la date de naissance et du calcul de l'âge
+const validateBirthDate = (birthDate) => {
     if (!birthDate) {
         alert('Please select your birth date.');
-        return;
+        return false;
     }
 
-    // Calcul de l'âge
     const today = new Date();
     const birthDateObj = new Date(birthDate);
     let age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDifference = today.getMonth() - birthDateObj.getMonth();
     const dayDifference = today.getDate() - birthDateObj.getDate();
+
     if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
         age--;
     }
 
     if (age < 16) {
         alert('You must be at least 16 years old.');
-        return;
+        return false;
     }
 
-    // Début de l'animation du spinner
-    setShowSpiner(true);
+    return true;
+};
 
-    // Préparer les informations de l'utilisateur en nettoyant les entrées
-    const sanitizedEmail = email.trim();
-    const sanitizedFullname = fullname.trim();
-    const sanitizedPhone = phonenbr.replace(/[^0-9]/g, '');
-
-    let infoUser = {
-        email: sanitizedEmail,
-        password: password, // Idéalement, assure-toi de hacher le mot de passe côté serveur
-        full_name: sanitizedFullname,
-        phone_number: sanitizedPhone,
-        sexe: genreA === 'man' ? 'men' : 'female',
-        profile_picture_url: selectedImage.toString(),
-        grade: 0,
-        region: selectedRegion,
-        birthdate: birthDate,
-    };
-
+// Fonction pour nettoyer et préparer les données de l'utilisateur
+const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion, birthDate, password,img) => {
+    const sanitizedEmail = email;
+    const sanitizedFullname = fullname;
+    const sanitizedPhone = phonenbr;
+    
     try {
-        const response = await axios.post(`${Port}/users`, infoUser, {
-            timeout: 5000, // Ajoute un timeout pour éviter les longs délais d'attente
-        });
-        
-        if (response.status === 201) {
-            setShowSpiner(false); // Arrêter le spinner
-            navigation.navigate("LoginWEmail", { genre });
-        } else {
-            throw new Error('Failed to add user'); // Gère les autres statuts
-        }
+       
+        return {
+            email: sanitizedEmail,
+            password: password, 
+            full_name: sanitizedFullname,
+            phone_number: sanitizedPhone,
+            sexe: genreA === 'man' ? 'male' : 'female',
+            profile_picture_url: img,
+            grade: idgrade,
+            region: selectedRegion,
+            birthdate: birthDate,
+        };
+    } catch (error) {
+        console.error('Error fetching grade:', error); // Log l'erreur de la requête
+        return null; // Retourner null si une erreur se produit
+    }
+};
+
+
+
+
+// Fonction pour envoyer la requête et créer l'utilisateur
+const addUser = async (userData, setShowSpiner, navigation, genre) => {
+    try {
+        // IntitalGrade()
+        // if(idgrade){
+
+            const response = await axios.post(`${Port}/users/`, userData);
+            if (response.status === 200) {
+                setShowSpiner(false); // Arrêter le spinner
+                navigation.navigate("LoginWEmail", { genre });
+            } else {
+                throw new Error('Failed to add user'); // Gère les autres statuts
+            }
+        // }
+
     } catch (error) {
         setShowSpiner(false); // Arrêter le spinner en cas d'erreur
         console.error('Error adding user:', error); // Log l'erreur pour débogage
         alert('Error adding user: ' + error.message);
     }
 };
+
+// Fonction principale pour ajouter un nouvel utilisateur
+const AddNewUser = async () => {
+    // Validation des entrées
+    if (!validateFullName(fullname)) return;
+    if (!validatePhoneNumber(phonenbr)) return;
+    if (!validateRegion(selectedRegion)) return;
+    if (!validateBirthDate(birthDate)) return;
+
+    // Début de l'animation du spinner
+    setShowSpiner(true);
+
+    try {
+        console.log(PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password));
+
+        const img = await uploadImage();
+        
+        if (!img) {
+            throw new Error("Image upload failed");
+        }
+        
+        console.log(img);
+
+        // Attends que la fonction prepareUserData retourne les données avant de continuer
+        const userData = await PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password, img);
+
+        // Vérifie si les données utilisateur sont correctement préparées
+        if (!userData) {
+            throw new Error("User data could not be prepared");
+        }
+
+        // Envoyer la requête pour ajouter l'utilisateur
+        await addUser(userData, setShowSpiner, navigation, genre);
+    } catch (error) {
+        setShowSpiner(false); // Arrêter le spinner en cas d'erreur
+        console.error('Error adding user:', error);
+        alert('Error adding user: ' + error.message);
+    }
+};
+
+
+
 
  const pickImageFromGallery = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -130,7 +244,10 @@ const AddNewUser = async () => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+        setSelectedImage({
+            uri: result.assets[0].uri,
+            type: result.assets[0].type, // Type MIME détecté (image/jpeg, image/png, etc.)
+        });
     }
     onClose();
   };
@@ -149,7 +266,10 @@ const AddNewUser = async () => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+        setSelectedImage({
+            uri: result.assets[0].uri,
+            type: result.assets[0].type, // Type MIME détecté (image/jpeg, image/png, etc.)
+        });
     }
     onClose();
   };
@@ -203,7 +323,11 @@ const AddNewUser = async () => {
             <Spinner color={genreA === 'man' ? "cyan.800" : "indigo.800"}  size="lg" />
           </HStack>;
       };
+
 ///////////////////////////NATIVE BASE//////////////////////////////
+const displayImageUri = selectedImage?decodeURIComponent(selectedImage.uri):''
+const displayImageUri2 =displayImageUri? decodeURIComponent(displayImageUri):''
+console.log(displayImageUri2 );
 
     return (
         <NativeBaseProvider>
@@ -218,8 +342,9 @@ const AddNewUser = async () => {
                 onPress={onOpen}
                 style={styles.cameraButton}>
                     {selectedImage?  
+                    
                     <Image
-                        source={{uri:selectedImage}}
+                        source={{uri: displayImageUri2}}
                         style={styles.cameraIcon}
                     />:
                     <Image
