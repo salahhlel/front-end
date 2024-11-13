@@ -13,6 +13,7 @@ import NPassword from './Splash & Login Screen/Npaswword';
 import ProfilePage from './Profile/ProfilePage/ProfilePage';
 import UpdatePage from './Profile/UpdateProfile/UpdatePage';
 import SettingsPage from './Profile/Sitings/SettingsPage';
+import MySales from './Profile/ProfilePage/widgets/MySales';
 import PostDetails from './Profile/PostDetails';
 import AddPost from './Post/AddPost/AddPost';
 export default function App() {
@@ -34,6 +35,8 @@ export default function App() {
         <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
         <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
+        <Stack.Screen name="MySales" options={{ headerShown: false }} component={MySales}/>
+
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>

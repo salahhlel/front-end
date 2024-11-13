@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Box, Progress, Center, NativeBaseProvider } from "native-base";
 import { FontAwesome } from '@expo/vector-icons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import nextW from '../../../assets/nextW.png';
 
 const MySales = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { gradeId } = route.params;
 
+
+  
   const ExampleProgress = () => {
     return (
       <Center w="100%">
@@ -24,19 +30,43 @@ const MySales = () => {
     );
   };
 
-  const ButtonElement = (text) => {
+  const Chart1 =()=>{
     return (
       <View>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>{text}</Text>
-          <Image
-            source={nextW}
-            style={{ width: 8, height: 14, marginRight: 10, marginLeft: 10 }}
-          />
-        </TouchableOpacity>
+        <View>
+          <Text>de</Text>
+          <TouchableOpacity>
+            <Text>{new Date()}</Text>
+          </TouchableOpacity>
+          <Text>vers</Text>
+          <TouchableOpacity>
+            <Text>{new Date()}</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View>
+            <Text>115</Text>
+            <Text>(20%)</Text>
+            <Text>commandes Livrée</Text>
+          </View>
+          <View>
+            <Text>115</Text>
+            <Text>(20%)</Text>
+            <Text>commandes Non Livrée</Text>
+          </View>
+        </View>
       </View>
-    );
-  };
+    )
+  }
+
+  const Chart2 =()=>{
+    return(
+      <View>
+        <Text>Ventes par periodes</Text>
+        
+      </View>
+    )
+  }
 
   return (
     <NativeBaseProvider>
@@ -67,8 +97,7 @@ const MySales = () => {
           </View>
           <ExampleProgress />
         </View>
-        {ButtonElement("ventes réalisées via recommandations")}
-        {ButtonElement("commissions gagnées")}
+
       </View>
     </NativeBaseProvider>
   );

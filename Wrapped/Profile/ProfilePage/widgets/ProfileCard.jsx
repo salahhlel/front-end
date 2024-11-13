@@ -76,10 +76,12 @@ const ProfileCard = (idUser) => {
         </View>
         {/* Sales and Basket Section */}
         <View style={styles.stats}>
+          <TouchableOpacity onPress={()=>{navigation.navigate("MySales",{gradeId:userCard.grade} )}} >
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{gradeCard.sales}</Text>
             <Text style={styles.statLabel}>Sales</Text>
           </View>
+          </TouchableOpacity>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>800</Text>
             <Text style={styles.statLabel}>Basket</Text>

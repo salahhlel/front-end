@@ -1,29 +1,28 @@
 import React, { useState, useRef } from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Text, Dimensions, ScrollView } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions, Animated } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import ProfileCard from './widgets/ProfileCard';
 import MyActivitie from './widgets/MyActivites';
 import MyWordrobes from './widgets/MyWordrobes';
-import MySales from './widgets/MySales';
 import Footer from '../../widgets/Footer';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ProfilePage = ( ) => {
+const ProfilePage = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { token,idUser } = route.params;
+  const { idUser } = route.params;
 
   const [activeTab, setActiveTab] = useState(0);
   const underlinePosition = useRef(new Animated.Value(0)).current; // This controls the underline position
-  const tabWidth = screenWidth / 2.6; // Adjusted tab width to make them scrollable
+  const tabWidth = screenWidth / 2; // Divide screen width by number of tabs
 
-  // Animate the underline
+  // Handle tab switch and animate underline
   const handleTabSwitch = (index) => {
     setActiveTab(index);
     Animated.timing(underlinePosition, {
-      toValue: index * tabWidth, // Move underline to the selected tab
+      toValue: index * tabWidth,
       duration: 200,
       useNativeDriver: false,
     }).start();
@@ -45,42 +44,29 @@ const ProfilePage = ( ) => {
       </View>
 
       {/* Tab Section */}
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
-        <View style={styles.tabContainer}>
-          <TouchableOpacity onPress={() => handleTabSwitch(0)} style={styles.tab}>
-            <Text style={[styles.tabText, activeTab === 0 ? styles.activeText : null]}>My Activities</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleTabSwitch(1)} style={styles.tab}>
-            <Text style={[styles.tabText, activeTab === 1 ? styles.activeText : null]}>My Wardrobes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleTabSwitch(2)} style={styles.tab}>
-            <Text style={[styles.tabText, activeTab === 2 ? styles.activeText : null]}>My Evolution</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleTabSwitch(3)} style={styles.tab}>
-            <Text style={[styles.tabText, activeTab === 3 ? styles.activeText : null]}>My Sales</Text>
-          </TouchableOpacity>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity onPress={() => handleTabSwitch(0)} style={styles.tab}>
+          <Text style={[styles.tabText, activeTab === 0 ? styles.activeText : null]}>My Activities</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleTabSwitch(1)} style={styles.tab}>
+          <Text style={[styles.tabText, activeTab === 1 ? styles.activeText : null]}>My Wardrobes</Text>
+        </TouchableOpacity>
 
-          <Animated.View
-            style={[
-              styles.underline,
-              {
-                transform: [
-                  {
-                    translateX: underlinePosition, // This will be a pixel value now
-                  },
-                ],
-              },
-            ]}
-          />
-        </View>
-      </ScrollView>
+        <Animated.View
+          style={[
+            styles.underline,
+            {
+              width: tabWidth,
+              transform: [{ translateX: underlinePosition }],
+            },
+          ]}
+        />
+      </View>
 
       {/* Content Section */}
       <View style={styles.contentContainer}>
         {activeTab === 0 && <MyActivitie />}
         {activeTab === 1 && <MyWordrobes />}
-        {activeTab === 2 && <Text>My Evolution</Text>}
-        {activeTab === 3 && <MySales />}
       </View>
 
       {/* Fixed Footer */}
@@ -96,31 +82,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nav: {
-    height: "25%", // Height of the nav section
+    height: "25%",
   },
   Card: {
     position: 'absolute',
     top: '10%',
-    shadowColor: 'black', // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset
-    shadowOpacity: 0.25, // Shadow opacity (0 to 1)
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
     shadowRadius: 3.5,
   },
   gradient: {
-    flex: 1, // Make the gradient fill the entire nav section
-  },
-  scrollContainer: {
-    marginTop: '20%', // You can adjust the margin
+    flex: 1,
   },
   tabContainer: {
     flexDirection: 'row',
-    position: 'relative', // Ensure it's relative to allow underline to be positioned properly
-    width: screenWidth * 1.5, // Increase the width for scrollable tabs
+    justifyContent: 'space-around',
+    marginTop: '20%',
+    position: 'relative', // Needed for underline positioning
   },
   tab: {
-    width: screenWidth / 2.6, // Adjust the width of each tab
     alignItems: 'center',
     paddingBottom: 10,
+    width: screenWidth / 2, // Each tab takes up half the screen width
   },
   tabText: {
     fontSize: 16,
@@ -128,24 +112,19 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   activeText: {
-    color: '#AD669E', // Active tab text color
+    color: '#AD669E',
   },
   underline: {
     position: 'absolute',
     bottom: 0,
-    left: 10, // Start from the left of the tab container
     height: 3,
-    width: screenWidth / 3, // Underline width based on number of tabs
-    backgroundColor: '#ffb6c8', // Underline color
+    backgroundColor: '#ffb6c8', // Color of the underline
   },
   contentContainer: {
-    flex: 100,
-    paddingBottom: "50%", // Ensure content does not overlap with the footer
-    
+    flex: 1,
+    paddingBottom: "50%",
   },
-  footerContainer: {
-    
-  },
+  footerContainer: {},
 });
 
 export default ProfilePage;
