@@ -1,16 +1,41 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, TouchableOpacity,SafeAreaView, Text, Dimensions, ScrollView } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import UpdateCard from './widgets/UpdateCard'
 import UserForm from './widgets/UpdateInputs';
 import Footer from '../../widgets/Footer';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import axios from "axios";
+import PORT from '../../Port';
 
 const screenWidth = Dimensions.get('window').width;
 const UpdatePage = () => {
   const navigation = useNavigation();
     const route = useRoute();
     const { name, grade , idUser } = route.params;
+
+    const [user,setUser]=useState([])
+    const [loading, setLoading] = useState(false);
+    
+    console.log(user);
+    
+  const GetOneUser=async()=>{
+    try{
+      const response=await axios.get(PORT+'/users/'+idUser.idUser)
+      if(response.status===200){
+        setUser(response.data)
+      }
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+  useEffect(()=>{
+    GetOneUser()
+  },[])
+
+
+
     return(
         <View style={styles.container}>
         {/* Navigation Section */}
@@ -26,7 +51,7 @@ const UpdatePage = () => {
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>
-      <UserForm idUser={idUser} />
+      <UserForm OneUser={user} />
     </SafeAreaView>
 
           <View style={styles.footerContainer}>

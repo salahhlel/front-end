@@ -9,6 +9,8 @@ const FooterWithConcaveShape = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
+  const { idUser } = route.params;
+
   // State to manage the selected icon
   const [selectedIcon, setSelectedIcon] = useState(null);
 
@@ -16,7 +18,7 @@ const FooterWithConcaveShape = () => {
   const handleIconPress = (iconName) => {
     setSelectedIcon(iconName);
     if(iconName==="person"){
-      navigation.navigate("ProfilePage", );
+      navigation.navigate("ProfilePage",idUser );
     }
     if(iconName==="add"){
       navigation.navigate("AddPost");

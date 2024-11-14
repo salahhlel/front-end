@@ -66,7 +66,7 @@ const LoginWEmail = () => {
             return;
         }
         try {
-            if (await handleEmailExist(email)) {
+            if (!await handleEmailExist(email)) {
                 const response = await axios.post(PORT + "/auth/forgot-password", { email });
                 if (response.status === 200) {
                     alert('A reset code has been sent to your email.');

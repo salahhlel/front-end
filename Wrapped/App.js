@@ -36,11 +36,9 @@ export default function App() {
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
         <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
         <Stack.Screen name="MySales" options={{ headerShown: false }} component={MySales}/>
-
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
-
       </Stack.Navigator>
     </NavigationContainer>
   );

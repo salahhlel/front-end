@@ -16,7 +16,7 @@ const ProfileCard = (idUser) => {
 
   const [idgarde,setIdgrade]=useState(null);
 
- console.log(userCard);
+ console.log(idgarde);
  
  const GetUserCart =async(id)=>{
   try{
@@ -51,10 +51,11 @@ const ProfileCard = (idUser) => {
 
   useEffect(()=>{
     GetUserCart(idUser.idUser)
-    if(idgarde){
+    if(!idgarde){
       GetGradeCart(idgarde)
     }else{
-      setLoad(!load)
+      GetUserCart(idUser.idUser)
+      GetGradeCart(idgarde);
     }
   },[load])
 

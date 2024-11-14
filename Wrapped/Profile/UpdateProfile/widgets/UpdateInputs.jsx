@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity ,ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import axios from "axios";
+import PORT from '../../../Port';
 
-const UserForm = (idUser) => {
-  const [fullName, setFullName] = useState('');
+const UserForm = (OneUser) => {
+  const User=OneUser.OneUser
+
+  const [fullName, setFullName] = useState(User.full_name);
   const [birthDay, setBirthDay] = useState('');
-  const [location, setLocation] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [location, setLocation] = useState(User.region);
+  const [email, setEmail] = useState(User.email);
+  const [phone, setPhone] = useState(User.phone_number);
   const [gender, setGender] = useState('');
+  const [existmdp, setExistmdp] = useState('');
+  const [newmdp, setNewmdp] = useState('');
+  const [newmdp2, setNewmdp2] = useState('');
+
 
   const handleSubmit = () => {
     if (!fullName || !birthDay || !location || !gender) {
@@ -17,6 +25,11 @@ const UserForm = (idUser) => {
       Alert.alert('Succès', `Nom: ${fullName}\nDate de naissance: ${birthDay}\nLocalisation: ${location}\nGenre: ${gender}`);
     }
   };
+  console.log(User.full_name)
+  
+
+
+
 
   return (
     <View style={styles.container}>
@@ -70,14 +83,14 @@ const UserForm = (idUser) => {
       <TextInput
         style={styles.input}
         placeholder="Entrer votre email"
-        value={location}
+        value={email}
         onChangeText={setEmail}
       />
        <Text style={styles.label}>Phone</Text>
       <TextInput
         style={styles.input}
         placeholder="+216"
-        value={location}
+        value={phone}
         onChangeText={setPhone}
       />
       <View style={styles.container1}>
@@ -89,22 +102,22 @@ const UserForm = (idUser) => {
       <TextInput
         style={styles.input}
         placeholder="Entrer votre mot de passe"
-        value={fullName}
-        onChangeText={setFullName}
+        value={existmdp}
+        onChangeText={setExistmdp}
       />
        <Text style={styles.label}>New Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Entrer votre nouveau Password"
-        value={fullName}
-        onChangeText={setFullName}
+        value={newmdp}
+        onChangeText={setNewmdp}
       />
        <Text style={styles.label}>Repete the New Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Repete votre nouveau Password"
-        value={fullName}
-        onChangeText={setFullName}
+        value={newmdp2}
+        onChangeText={setNewmdp2}
       />
       {/* <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.button}

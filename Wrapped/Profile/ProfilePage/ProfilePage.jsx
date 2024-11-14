@@ -71,7 +71,7 @@ const ProfilePage = () => {
 
       {/* Fixed Footer */}
       <View style={styles.footerContainer}>
-        <Footer />
+        <Footer idUser={idUser} />
       </View>
     </View>
   );
