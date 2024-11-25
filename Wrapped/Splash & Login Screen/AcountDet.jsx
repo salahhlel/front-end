@@ -12,6 +12,7 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
 import Port from '../Port'
 import { err } from 'react-native-svg';
+import * as FileSystem from 'expo-file-system';
 
 
 const AcountDet = () => {
@@ -62,7 +63,9 @@ const validateFullName = (fullname) => {
     }
     return true;
 };
-console.log(selectedImage)
+// console.log('image'+FileSystem.readAsStringAsync(selectedImage.uri, {
+//     encoding: FileSystem.EncodingType.Base64,
+//   }))
 
 const uploadImage = async () => {
     if (!selectedImage) {
@@ -70,18 +73,19 @@ const uploadImage = async () => {
       return;
     }
   
-    const formData = new FormData();
-    // Il est important de s'assurer que le type MIME est bien défini
-    formData.append('image', {
-      uri: selectedImage.uri,
-      name: selectedImage.uri.split('/').pop(),  // Optionnel: donner un nom à l'image
-      type: selectedImage.type || 'image/jpeg',  // Assurez-vous que le type est correctement défini
-    });
-  
     try {
-      const response = await axios.post(Port + '/props/upload', formData, {
+      // Lire le fichier local et convertir en base64
+      const base64File = await FileSystem.readAsStringAsync(selectedImage.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      // Créer un objet JSON avec le fichier encodé
+      const file = `data:image/jpeg;base64,${base64File}`;
+  
+      // Envoyer au backend
+      const response = await axios.post(`${Port}/props/upload`, { file }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
   
@@ -90,7 +94,7 @@ const uploadImage = async () => {
         return response.data.url;
       }
     } catch (error) {
-      console.log('Error uploading image:', error);
+      console.error('Error uploading image:', error.response ? error.response.data : error.message);
     }
   };
 // Fonction de validation du numéro de téléphone
@@ -323,9 +327,9 @@ const AddNewUser = async () => {
       };
 
 ///////////////////////////NATIVE BASE//////////////////////////////
-const displayImageUri = selectedImage?decodeURIComponent(selectedImage.uri):''
-const displayImageUri2 =displayImageUri? decodeURIComponent(displayImageUri):''
-console.log(displayImageUri2 );
+// const displayImageUri = selectedImage?decodeURIComponent(selectedImage.uri):''
+// const displayImageUri2 =displayImageUri? decodeURIComponent(displayImageUri):''
+// console.log(displayImageUri2 );
 
     return (
         <NativeBaseProvider>
@@ -342,7 +346,7 @@ console.log(displayImageUri2 );
                     {selectedImage?  
                     
                     <Image
-                        source={{uri: displayImageUri2}}
+                        source={{uri: selectedImage.uri}}
                         style={styles.cameraIcon}
                     />:
                     <Image
@@ -412,7 +416,7 @@ console.log(displayImageUri2 );
                 </View>
                     {!showSpiner?
                 <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genreA === 'man' ? '#2C9AEE' : '#AD669E' }]}
-                onPress={()=>{AddNewUser()}}
+                onPress={()=>{AddNewUser(),uploadImage();}}
                 >
                     <Text style={styles.proceedText}>Proceed</Text>
                 </TouchableOpacity>
@@ -451,9 +455,10 @@ const styles = StyleSheet.create({
         marginTop: "20%"
     },
     cameraIcon: {
-        width: 40,
-        height: 40,
-        tintColor: '#FFFFFF',
+        width: 100,
+        height: 100,
+        borderRadius:80
+        // tintColor: '#FFFFFF',
     },
     inputContainer: {
         width: '100%',

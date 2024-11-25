@@ -16,6 +16,7 @@ import SettingsPage from './Profile/Sitings/SettingsPage';
 import MySales from './Profile/ProfilePage/widgets/MySales';
 import PostDetails from './Profile/PostDetails';
 import AddPost from './Post/AddPost/AddPost';
+import AddBrand from './Post/AddPost/AddBrand';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ export default function App() {
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
+        <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

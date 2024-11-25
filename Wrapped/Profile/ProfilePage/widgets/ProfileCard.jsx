@@ -59,8 +59,9 @@ const ProfileCard = (idUser) => {
     }
   },[load])
 
-
-
+  
+  const optimizedImageUrl = `${userCard.profile_picture_url}?w=200&h=200&fit=fill`;
+  console.log(optimizedImageUrl);
 
 
   return (
@@ -68,7 +69,7 @@ const ProfileCard = (idUser) => {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/50' }} // Replace with the actual image URL
+          source={{uri:userCard.profile_picture_url}} // Replace with the actual image URL
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
@@ -103,7 +104,7 @@ const ProfileCard = (idUser) => {
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button1}
         onPress={()=>{
-          navigation.navigate("SettingsPage", );
+          navigation.navigate("SettingsPage", )
         }}
         >
             <Image

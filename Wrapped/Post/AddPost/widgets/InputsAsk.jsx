@@ -3,10 +3,7 @@ import { View,Image, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity
 import { Select, Box, CheckIcon, Center, NativeBaseProvider } from "native-base";
 import iconAddImg from '../../../assets/addimg.png'
 import pencilicon from '../../../assets/pencil.png'
-const InputsAsk=()=>{
-    const [compositions, setCompositions] = React.useState("");
-    const [occasion , setOccasion ] = React.useState("");
-    const [description, setDescription] = React.useState(""); 
+const InputsAsk=({ description, setDescription, compositions, setCompositions, occasion, setOccasion })=>{
     const Example = ({ text, selectedValue, onValueChange }) => {
         //////modification future => il doit choisir plusieur compositions
         return (
