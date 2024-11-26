@@ -4,7 +4,9 @@ import AddImage from './widgets/AddImage.jsx';
 import InputsAsk from './widgets/InputsAsk.jsx';
 import plusIcon from '../../assets/plus.png';
 
-const AddPost = () => {
+const AddPost = ({route}) => {
+  const { brands } = route?.params || {}; 
+
   const [images, setImages] = useState([]);
   const [addImageComponents, setAddImageComponents] = useState([<AddImage setImages={setImages} key={0} index={0} />]);
 
@@ -19,13 +21,15 @@ const AddPost = () => {
       <AddImage setImages={setImages} key={newIndex} index={newIndex} />
     ]);
   };
+// console.log(brands);
 
   const handleNext = () => {
     const postData = {
       description,
       compositions,
       occasion,
-      images
+      images,
+      brands
     };
     console.log(postData);
     // Vous pouvez envoyer postData à un serveur ou à une autre fonction selon vos besoins

@@ -11,15 +11,23 @@ import {
     FlatList,
 } from 'react-native';
 import { NativeBaseProvider } from 'native-base';
+import { Picker } from '@react-native-picker/picker'; // Ajoutez cette dépendance si nécessaire
+import { useNavigation } from '@react-navigation/native'; // Importer la navigation
+
 
 const AddBrand = ({ route }) => {
     const { image } = route.params; // Récupère l'image depuis les paramètres
+    const navigation = useNavigation(); // Hook de navigation
+
     const [isModalVisible, setModalVisible] = useState(false); // Contrôle de la popup
     const [brandName, setBrandName] = useState(''); // Nom de la marque
     const [brandPrice, setBrandPrice] = useState(''); // Prix
+    const [selectedCategory, setSelectedCategory] = useState(''); // Catégorie sélectionnée
     const [selectedRegion, setSelectedRegion] = useState(null); // Région sélectionnée
     const [brands, setBrands] = useState([]); // Liste des marques ajoutées
     const [editingIndex, setEditingIndex] = useState(null); // Marque en cours de modification
+
+    const categories = ['T-shirt', 'Pull', 'Robe', 'Jeans', 'Veste'];
 
     // Fonction pour ouvrir le modal
     const openModal = () => {
@@ -37,27 +45,26 @@ const AddBrand = ({ route }) => {
 
     // Enregistre les informations de la marque
     const saveBrandInfo = () => {
-        if (brandName && brandPrice) {
+        if (brandName && brandPrice && selectedCategory && selectedRegion) {
             const newBrand = {
                 name: brandName,
                 price: brandPrice,
-                region: selectedRegion,
+                category: selectedCategory,
+                region: selectedRegion, // Ajoutez la région sélectionnée
             };
-
+    
             if (editingIndex !== null) {
-                // Modification d'une marque existante
                 const updatedBrands = [...brands];
                 updatedBrands[editingIndex] = newBrand;
                 setBrands(updatedBrands);
                 setEditingIndex(null);
             } else {
-                // Ajout d'une nouvelle marque
                 setBrands([...brands, newBrand]);
             }
-
+    
             closeModal();
         } else {
-            Alert.alert('Error', 'Please fill in all fields.');
+            Alert.alert('Error', 'Please fill in all fields, including selecting a region.');
         }
     };
 
@@ -79,7 +86,8 @@ const AddBrand = ({ route }) => {
         const brand = brands[index];
         setBrandName(brand.name);
         setBrandPrice(brand.price);
-        setSelectedRegion(brand.region);
+        setSelectedCategory(brand.category);
+        setSelectedRegion(brand.region); // Prise en charge de la région
         setEditingIndex(index);
         setModalVisible(true);
     };
@@ -100,7 +108,7 @@ const AddBrand = ({ route }) => {
                         style={styles.addBrandButton}
                         onPress={openModal}
                     >
-                        <Text style={styles.addBrandText}>+ Add brand tags</Text>
+                        <Text style={styles.addBrandText}>+    Add brand tags</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -112,7 +120,7 @@ const AddBrand = ({ route }) => {
                     renderItem={({ item, index }) => (
                         <View style={styles.brandItem}>
                             <Text style={styles.brandText}>
-                                {item.name} - ${item.price}
+                            {item.name} - ${item.price} - {item.category}
                             </Text>
                             <View style={styles.actions}>
                                 <TouchableOpacity
@@ -163,6 +171,23 @@ const AddBrand = ({ route }) => {
                                     keyboardType="numeric"
                                     style={styles.input}
                                 />
+                                {/* Sélecteur de catégorie */}
+                            <Picker
+                                selectedValue={selectedCategory}
+                                onValueChange={(itemValue) =>
+                                    setSelectedCategory(itemValue)
+                                }
+                                style={styles.picker}
+                            >
+                                <Picker.Item label="Select category" value="" />
+                                {categories.map((category, index) => (
+                                    <Picker.Item
+                                        key={index}
+                                        label={category}
+                                        value={category}
+                                    />
+                                ))}
+                            </Picker>
                                 <TouchableOpacity
                                     style={styles.saveButton}
                                     onPress={saveBrandInfo}
@@ -180,7 +205,12 @@ const AddBrand = ({ route }) => {
                         </TouchableOpacity>
                     </View>
                 </Modal>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} 
+        onPress={()=>{
+            console.log(brands);
+            navigation.navigate('AddPost', { brands }); // Navigue vers la page de prévisualisation
+        }}
+        >
         <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>Next</Text>
       </TouchableOpacity>
             </View>
@@ -331,6 +361,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderRadius: 10,
       },
+      picker: {
+        width: '100%',
+        marginBottom: 15,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
+    },
 });
 
 export default AddBrand;
