@@ -16,6 +16,10 @@ import SettingsPage from './Profile/Sitings/SettingsPage';
 import MySales from './Profile/ProfilePage/widgets/MySales';
 import PostDetails from './Profile/PostDetails';
 import AddPost from './Post/AddPost/AddPost';
+import ProfilePagePro from './front-endPro/Profile/ProfilePage/ProfilePagePro';
+import Pub from './front-endPro/Profile/ProfilePage/widgets/Pub' ; 
+import oneProduct from './front-endPro/Profile/ProfilePage/widgets/OneProduct' ;
+import SignInPro from './front-endPro/Splash & Login Screen/AcountDetPro';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -39,6 +43,12 @@ export default function App() {
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
+        <Stack.Screen name="ProfilePagePro" options={{ headerShown: false }} component={ProfilePagePro}/>
+        <Stack.Screen name="Pub" options={{ headerShown: false }} component={Pub}/>
+        <Stack.Screen name="oneProduct" options={{ headerShown: false }} component={oneProduct}/>
+        <Stack.Screen name="SignInPro" options={{ headerShown: false }} component={SignInPro}/>
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );
