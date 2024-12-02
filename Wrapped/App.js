@@ -20,6 +20,7 @@ import ProfilePagePro from './front-endPro/Profile/ProfilePage/ProfilePagePro';
 import Pub from './front-endPro/Profile/ProfilePage/widgets/Pub' ; 
 import oneProduct from './front-endPro/Profile/ProfilePage/widgets/OneProduct' ;
 import SignInPro from './front-endPro/Splash & Login Screen/AcountDetPro';
+import AddBrand from './Post/AddPost/AddBrand';
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ export default function App() {
         <Stack.Screen name="SignInPro" options={{ headerShown: false }} component={SignInPro}/>
 
 
+        <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
